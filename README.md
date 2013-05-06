@@ -1,4 +1,6 @@
-AGC_KaggleAux
-=============
+##AGC_KaggleAux
 
-A module of auxiliary functions to aid Data Science competitors in Kaggle Competitions.  Open and looking for contributors
+
+A module of auxiliary functions to aid competitors in Kaggle competitions.  
+
+####Open to and actively looking for contributors!
