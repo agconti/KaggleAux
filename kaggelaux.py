@@ -1,6 +1,28 @@
 # Kaggel Auxillary Functions
 # AGC 2013
 
+def progress(i, num_tasks):
+    '''
+    A simple textual progress bar
+    
+    Ins
+    --
+    i = should be an iterable value to measure the progress of your taks
+    num_tasks = total number of tasks
+
+    outs 
+    --
+    A progress bar like [#########  ]
+    '''
+    progress = "\r["
+    for _ in range (0,i):
+        progress += "#"
+    for _ in range (i, num_tasks):
+        progress += " "
+    progress += "]"
+    sys.stdout.write(progress)
+    sys.stdout.flush()
+    
 
 def regress_pred_output(test_data,z,y=""):
     """ 
