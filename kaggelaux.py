@@ -15,12 +15,17 @@ def progress(i, num_tasks):
     A progress bar like [#########  ]
     '''
     import sys
+
     progress = "\r["
+    
     for _ in range (0,i):
         progress += "#"
+    
     for _ in range (i, num_tasks):
         progress += " "
+    
     progress += "]"
+    
     sys.stdout.write(progress)
     sys.stdout.flush()
     
