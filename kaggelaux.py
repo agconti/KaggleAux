@@ -30,7 +30,7 @@ def progress(i, num_tasks):
     sys.stdout.flush()
     
 
-def regress_pred_output(test_data,z,y=""):
+def regress_pred_output(test_data, z, y = ""):
     """ 
     Returns a dataframe of independ var predictions of a test file based on your regression of a train file.
     
@@ -137,23 +137,24 @@ def quater_maker(d):
       #manipulate months. say if  0<m4: return YYYY + Q1 ect.
       # then apply to dateline
 
-def score_rmsle(y,df,df2):
+def score_rmsle(y, df, df2):
     '''
     ins 
     --
-    y = var to compare
-    df must be set to compare
-    df2 must be the soultions set
+    y =  what your trying to predict. must be a string. ie. 'SalesPrice'
+    df =  your predictions
+    df2 = the soultions set
     
     outs
     --
-    rmsle
+    prints rmsle
+    rmsle as a float
     '''
     import numpy as np
-    errors=list()
+    errors = list()
     
-    for i in xrange(0,df[y].size):
-        errors.append(np.square((np.log(df2.ix[i, str(y)] + 1) - np.log(df.ix[i, str(y)] + 1))))
+    for i, val in enumerate(df[y].iteritems()):
+        errors.append(np.square((np.log(df2[y].irow(i) + 1) - np.log(val[1] + 1))))
     
     errors = np.asarray(errors)
     m = errors.mean()
@@ -162,12 +163,25 @@ def score_rmsle(y,df,df2):
     print "rsmle: " + str(rsmle)
     return rsmle
 
-def score_rmse(y,df,df2):
+def score_rmse(y, df, df2):
+    """
+    ins 
+    --
+    y =  what your trying to predict. must be a string. ie. 'SalesPrice'
+    df =  your predictions
+    df2 = the soultions set
+    
+    outs
+    --
+    prints rmse
+    rmse as a float
+    """
     import numpy as np
+
     errors = list()
     
-    for i in xrange(0,df[y].size):
-        errors.append(np.square((df2.ix[i, str(y)] - df.ix[i, str(y)])))
+    for i, val in enumerate(df[y].iteritems()):
+        errors.append(np.square((df2[y].irow(i) - val[1])))
     
     errors = np.asarray(errors)
     m = errors.mean()
@@ -176,7 +190,7 @@ def score_rmse(y,df,df2):
     print "rsme: " + str(rsme)
     return rsme
 
-def unwanted_pals(x,s=.1):
+def unwanted_pals(x, s = .1):
     '''
     Inputs 
     --
