@@ -14,6 +14,7 @@ def progress(i, num_tasks):
     --
     A progress bar like [#########  ]
     '''
+    import sys
     progress = "\r["
     for _ in range (0,i):
         progress += "#"
@@ -50,30 +51,30 @@ def regress_pred_output(test_data,z,y=""):
     
     ######## House Keeping #######
     #parse independt var
-    if y=='':
-        s=z.summary_old()
-        s=split('[\s\n|]',s)
-        y=s[26]
+    if y == '':
+        s = z.summary_old()
+        s = split('[\s\n|]',s)
+        y = s[26]
     #make sure y is in data frame
-    if (y in test_data.columns)==False:
-        indep_header=str(y)+" test constant for calculations"
-        test_data[indep_header]=np.random.randn()
+    if (y in test_data.columns) == False:
+        indep_header = str(y) + " test constant for calculations"
+        test_data[indep_header] = np.random.randn()
 
     #convert results to series
-    z=Series(z.params)
+    z = Series(z.params)
     
     
     #arrange our independ vars
     for i in z.index:
-        if i!='Intercept':
+        if i != 'Intercept':
             if '[' in i:
                 #get around catagorical splits
-                model_holder=split("[[]",i)
-                i=model_holder[0]
+                model_holder = split("[[]", i)
+                i = model_holder[0]
             #check for duplicates
-            if (i in model_dep)==False:
+            if (i in model_dep) == False:
                 #deal with first element added
-                if model_dep=='':
+                if model_dep == '':
                     model_dep = str(i)
                 else:
                   #create string of indep vars
@@ -82,19 +83,19 @@ def regress_pred_output(test_data,z,y=""):
     
     
     #put our model togehter
-    model=(y+' ~ '+model_dep)
+    model = (y + ' ~ ' + model_dep)
     print model
     #create reg friendly exog and endog dfs
     df_I, df_D = dmatrices( model, data=test_data, return_type='dataframe')
     
     #create predictions
-    for x in xrange(0,len(df_I)):
+    for x in xrange(0, len(df_I)):
         #sum of B*x
         ##ex: 'SalePrice ~ YearMade + MachineID + ModelID + datasource + auctioneerID + UsageBand'
-        y_holder=0
+        y_holder = 0
         for i in z.index:
-            y_holder+=(df_D.ix[x,str(i)]*z[str(i)])
-        test_data[y].ix[x]=y_holder
+            y_holder += (df_D.ix[x, str(i)] * z[str(i)])
+        test_data[y].ix[x] = y_holder
         
     #reg_results=pandas.merge(df_I,df_D, left_index=True,right_index=True)
     #results=pandas.concat(df_I,test_data, left_index=True,right_index=True)
@@ -112,19 +113,19 @@ def quater_maker(d):
     
     AGC 2013
     """
-    r=''
-    Q1=[1, 2, 3]
-    Q2=[4, 5, 6]
-    Q3=[7, 8, 9]
-    Q4=[10, 11, 12]
+    r = ''
+    Q1 = [1, 2, 3]
+    Q2 = [4, 5, 6]
+    Q3 = [7, 8, 9]
+    Q4 = [10, 11, 12]
     if d.month in Q1:
-        r='Q1'
+        r = 'Q1'
     if d.month in Q2:
-        r='Q2'
+        r = 'Q2'
     if d.month in Q3:
-        r='Q3'
+        r = 'Q3'
     if d.month in Q4:
-        r='Q4'
+        r = 'Q4'
     return r
         
       #if date is within daterange, Q1 ect. then output ex: 2011 Q1
@@ -147,27 +148,27 @@ def score_rmsle(y,df,df2):
     errors=list()
     
     for i in xrange(0,df[y].size):
-        errors.append(np.square((np.log(df2.ix[i,str(y)]+1)-np.log(df.ix[i,str(y)]+1))))
+        errors.append(np.square((np.log(df2.ix[i, str(y)] + 1) - np.log(df.ix[i, str(y)] + 1))))
     
-    errors=np.asarray(errors)
-    m=errors.mean()
-    rsmle=np.sqrt(m)
+    errors = np.asarray(errors)
+    m = errors.mean()
+    rsmle = np.sqrt(m)
     
-    print "rsmle: "+str(rsmle)
+    print "rsmle: " + str(rsmle)
     return rsmle
 
 def score_rmse(y,df,df2):
     import numpy as np
-    errors=list()
+    errors = list()
     
     for i in xrange(0,df[y].size):
-        errors.append(np.square((df2.ix[i,str(y)]-df.ix[i,str(y)])))
+        errors.append(np.square((df2.ix[i, str(y)] - df.ix[i, str(y)])))
     
-    errors=np.asarray(errors)
-    m=errors.mean()
-    rsme=np.sqrt(m)
+    errors = np.asarray(errors)
+    m = errors.mean()
+    rsme = np.sqrt(m)
     
-    print "rsme: "+str(rsme)
+    print "rsme: " + str(rsme)
     return rsme
 
 def unwanted_pals(x,s=.1):
@@ -181,7 +182,7 @@ def unwanted_pals(x,s=.1):
     --
     returns a list of columns below siginicance level
     '''
-    dropl=list()
+    dropl = list()
     for i,z in enumerate(x):
         if z>s:
              dropl.append(x.index[i])
@@ -202,9 +203,9 @@ def stock_price_at_date(x, ticker, lag=0):
     from pandas.io.data import DataReader
     from datetime import date, timedelta
  
-    x=(x-timedelta(days=lag))
-    r=DataReader(ticker,start=x, end=x,data_source='yahoo')
-    r=r.ix[0,5]
+    x = (x - timedelta(days = lag))
+    r = DataReader(ticker,start=x, end=x, data_source='yahoo')
+    r = r.ix[0,5]
     return r
 
 def side_by_side(*objs, **kwds):
@@ -226,11 +227,11 @@ def describe_frame(df):
     agc2013
     """
     from pandas import Series, DataFrame
-    sum_stats=[]
+    sum_stats = []
     for i in df.columns:
-        x=Series(df[i].describe())
-        x.name=i
+        x = Series(df[i].describe())
+        x.name = i
         sum_stats.append(x)
-    stats=DataFrame(sum_stats)
+    stats = DataFrame(sum_stats)
     stats
     return stats
