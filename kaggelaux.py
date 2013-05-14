@@ -137,40 +137,39 @@ def quater_maker(d):
       #manipulate months. say if  0<m4: return YYYY + Q1 ect.
       # then apply to dateline
 
-def score_rmsle(y, df, df2):
+def score_rmsle(y, df, df2, p = 0):
     '''
     ins 
     --
     y =  what your trying to predict. must be a string. ie. 'SalesPrice'
     df =  your predictions
     df2 = the soultions set
-    
+    p = option to print rmsle as string; 0 = dont print, 1 = print 
     outs
     --
     prints rmsle
     rmsle as a float
     '''
     import numpy as np
-    errors = list()
     
-    for i, val in enumerate(df[y].iteritems()):
-        errors.append(np.square((np.log(df2[y].irow(i) + 1) - np.log(val[1] + 1))))
+    prediction = np.asarray(df[y])
+    actual = np.asarray(df2[y])
+
+    rsmle = np.sqrt(np.mean(np.power((np.log(df2[y].irow(i) + 1) - np.log(val[1] + 1), 2))))
     
-    errors = np.asarray(errors)
-    m = errors.mean()
-    rsmle = np.sqrt(m)
-    
-    print "rsmle: " + str(rsmle)
+    if p == 1 :
+        print "rsmle: " + str(rsmle)
     return rsmle
 
-def score_rmse(y, df, df2):
+def score_rmse(y, df, df2, p = 0 ):
     """
     ins 
     --
     y =  what your trying to predict. must be a string. ie. 'SalesPrice'
     df =  your predictions
     df2 = the soultions set
-    
+    p = option to print rmsle as string; 0 = dont print, 1 = print
+
     outs
     --
     prints rmse
@@ -178,16 +177,14 @@ def score_rmse(y, df, df2):
     """
     import numpy as np
 
-    errors = list()
+    prediction = np.asarray(df[y])
+    actual = np.asarray(df2[y])
+   
+    rsme = np.sqrt(np.mean(np.power((actual - prediction), 2)))
     
-    for i, val in enumerate(df[y].iteritems()):
-        errors.append(np.square((df2[y].irow(i) - val[1])))
+    if p == 1:
+        print "rsme: " + str(rsme)
     
-    errors = np.asarray(errors)
-    m = errors.mean()
-    rsme = np.sqrt(m)
-    
-    print "rsme: " + str(rsme)
     return rsme
 
 def unwanted_pals(x, s = .1):
