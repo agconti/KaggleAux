@@ -155,7 +155,7 @@ def score_rmsle(y, df, df2, p = 0):
     prediction = np.asarray(df[y])
     actual = np.asarray(df2[y])
 
-    rsmle = np.sqrt(np.mean(np.power((np.log(df2[y].irow(i) + 1) - np.log(val[1] + 1), 2))))
+    rsmle = np.sqrt(np.mean(np.power(np.log(actual + 1) - np.log(prediction + 1), 2)))
     
     if p == 1 :
         print "rsmle: " + str(rsmle)
