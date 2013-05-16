@@ -31,7 +31,7 @@ def progress(i, num_tasks):
     
 def cat_clean(s):
     """
-    Cleans catagory varaibles of NaNs by setting the NaN to 0 so it can be proccessed by a patsy dmatrices function.
+    Cleans categorical variables of NaNs by setting the NaN to 0 so it can be processed by a patsy dmatrices function.
 
     Inputs
     --
@@ -39,7 +39,7 @@ def cat_clean(s):
 
     output
     --
-    cat value or int 0 inplace of a NaN val
+    cat value or int 0 in place of a NaN val
     """
     import numpy as np
     
@@ -49,7 +49,7 @@ def cat_clean(s):
 
 def predict(test_data, results, i):
     """ 
-    Returns a NumPy array of independ var predictions of a test file based on your regression of a train file. Built for speed
+    Returns a NumPy array of independent variable predictions of a test file based on your regression of a train file. Built for speed
     
     Parameters
     --
@@ -57,7 +57,7 @@ def predict(test_data, results, i):
     results: should be dict of your models results wrapper and the formula used to produce it. 
         ie.  
         results['Model_Name'] = {[<statsmodels.regression.linear_model.RegressionResultsWrapper> , "Price ~ I(Supply, Demand)] }
-    i: should be the name of your model. You can itterate through the results dict. 
+    i: should be the name of your model. You can iterate through the results dict. 
     --
    
     Returns
@@ -77,9 +77,9 @@ def predict(test_data, results, i):
     yt, xt = dmatrices(formula, data=test_data, return_type='dataframe')
 
     
-    # remove extraneous features for efficeny 
+    # remove extraneous features for efficiency 
     to_drop = list()
-    to_drop[:] = [] # Empty list, incase cells are executed out of order
+    to_drop[:] = [] # Empty list, in case cells are executed out of order
     for c in xt.columns:
         if c not in model_params.index:
             to_drop.append(c)
@@ -115,13 +115,13 @@ def predict(test_data, results, i):
 
 def quater_maker(d):
     """
-    Pareses dates and returns the apropriate quater.
+    Pareses dates and returns the appropriate quarter.
     --
     Parameters
     d: a python date time object
     --
     Returns:
-    The quater in a string
+    The quarter in a string
     
     AGC 2013
     """
@@ -150,7 +150,7 @@ def score_rmsle(y, df, df2, p = 0):
     --
     y =  what your trying to predict. must be a string. ie. 'SalesPrice'
     df =  your predictions
-    df2 = the soultions set
+    df2 = the solutions set
     p = option to print rmsle as string; 0 = dont print, 1 = print 
     outs
     --
@@ -174,8 +174,8 @@ def score_rmse(y, df, df2, p = 0 ):
     --
     y =  what your trying to predict. must be a string. ie. 'SalesPrice'
     df =  your predictions
-    df2 = the soultions set
-    p = option to print rmsle as string; 0 = dont print, 1 = print
+    df2 = the solutions set
+    p = option to print rmsle as string; 0 = don't print, 1 = print
 
     outs
     --
@@ -199,11 +199,11 @@ def unwanted_pals(x, s = .1):
     Inputs 
     --
     x should be a pandas series of the results.pvalues of your model
-    s = signifcance level, default at 90% confidence
+    s = significance level, default at 90% confidence
     
     Outs
     --
-    returns a list of columns below siginicance level
+    returns a list of columns below significance level
     '''
     dropl = list()
     for i,z in enumerate(x):
