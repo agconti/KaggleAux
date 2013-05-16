@@ -29,6 +29,23 @@ def progress(i, num_tasks):
     sys.stdout.write(progress)
     sys.stdout.flush()
     
+def cat_clean(s):
+    """
+    Cleans catagory varaibles of NaNs by setting the NaN to 0 so it can be proccessed by a patsy dmatrices function.
+
+    Inputs
+    --
+    s = cat value
+
+    output
+    --
+    cat value or int 0 inplace of a NaN val
+    """
+    import numpy as np
+    
+    if isinstance(s, str) == False and np.isnan(s) == True:
+        s = 0
+    return s 
 
 def predict(test_data, results, i):
     """ 
@@ -37,7 +54,9 @@ def predict(test_data, results, i):
     Parameters
     --
     Test_data: should be test data you are trying to predict in a pandas dataframe 
-    results: should be dict of your models results wrapper and the formula used to produce it. ie.  results['Model_Name'] = {< statsmodels , "Price ~ I(Supply, Demand) }
+    results: should be dict of your models results wrapper and the formula used to produce it. 
+        ie.  
+        results['Model_Name'] = {[<statsmodels.regression.linear_model.RegressionResultsWrapper> , "Price ~ I(Supply, Demand)] }
     i: should be the name of your model. You can itterate through the results dict. 
     --
    
