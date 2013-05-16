@@ -30,81 +30,69 @@ def progress(i, num_tasks):
     sys.stdout.flush()
     
 
-def regress_pred_output(test_data, z, y = ""):
+def predict(test_data, results, i):
     """ 
-    Returns a dataframe of independ var predictions of a test file based on your regression of a train file.
+    Returns a NumPy array of independ var predictions of a test file based on your regression of a train file. Built for speed
     
     Parameters
     --
-    Test_data: must be the test data sheet opened through pandas: ie. in a dataframe 
-    z: should be results object from training regeresion from the SciPy statsmodels resuts object
-    y: should be the dependent var in a string from your traing data, if left blank; the function will try to parse it for you.(will only work w/o spaces in the variable name) 
+    Test_data: should be test data you are trying to predict in a pandas dataframe 
+    results: should be dict of your models results wrapper and the formula used to produce it. ie.  results['Model_Name'] = {< statsmodels , "Price ~ I(Supply, Demand) }
+    i: should be the name of your model. You can itterate through the results dict. 
     --
    
     Returns
     --
-    Returns a merged dataframe
+    Predictions in a flat NumPy array. 
     AGC 2013
     """
     import numpy as np
-    from pandas import Series
-    import pylab
+    from pandas import DataFrame
     from patsy import dmatrices
-    from re import split
-    model_dep=''
-    y_holder=0
-    
-    ######## House Keeping #######
-    #parse independt var
-    if y == '':
-        s = z.summary_old()
-        s = split('[\s\n|]',s)
-        y = s[26]
-    #make sure y is in data frame
-    if (y in test_data.columns) == False:
-        indep_header = str(y) + " test constant for calculations"
-        test_data[indep_header] = np.random.randn()
 
-    #convert results to series
-    z = Series(z.params)
     
+    model_params = DataFrame(results[i][0].params)
+    formula = results[i][1]
     
-    #arrange our independ vars
-    for i in z.index:
-        if i != 'Intercept':
-            if '[' in i:
-                #get around catagorical splits
-                model_holder = split("[[]", i)
-                i = model_holder[0]
-            #check for duplicates
-            if (i in model_dep) == False:
-                #deal with first element added
-                if model_dep == '':
-                    model_dep = str(i)
-                else:
-                  #create string of indep vars
-                    model_dep = model_dep + ' + ' + str(i)
-          
+    # Create reg friendly test dataframe
+    yt, xt = dmatrices(formula, data=test_data, return_type='dataframe')
+
     
+    # remove extraneous features for efficeny 
+    to_drop = list()
+    to_drop[:] = [] # Empty list, incase cells are executed out of order
+    for c in xt.columns:
+        if c not in model_params.index:
+            to_drop.append(c)
+    xt = xt.drop(to_drop, axis=1)
     
-    #put our model togehter
-    model = (y + ' ~ ' + model_dep)
-    print model
-    #create reg friendly exog and endog dfs
-    df_I, df_D = dmatrices( model, data=test_data, return_type='dataframe')
+    to_drop[:] = [] # Empty list
+    for c in model_params.index : 
+        if c not in xt.columns:
+            to_drop.append(c)
+    model_params = model_params.drop(to_drop)
     
-    #create predictions
-    for x in xrange(0, len(df_I)):
-        #sum of B*x
-        ##ex: 'SalePrice ~ YearMade + MachineID + ModelID + datasource + auctioneerID + UsageBand'
-        y_holder = 0
-        for i in z.index:
-            y_holder += (df_D.ix[x, str(i)] * z[str(i)])
-        test_data[y].ix[x] = y_holder
-        
-    #reg_results=pandas.merge(df_I,df_D, left_index=True,right_index=True)
-    #results=pandas.concat(df_I,test_data, left_index=True,right_index=True)
-    return test_data
+    # Convert to NumPy arrays for performance
+    model_params = np.asarray(model_params)
+    yt = np.asarray(yt)
+    yt = yt.ravel()
+    xt = np.asarray(xt)
+
+    
+    # Use our models to create predictions
+    row, col = xt.shape
+    model_params = model_params.ravel() # flatten array
+    model_array = []
+    
+    for _ in xrange(row):
+            model_array.append(model_params)
+    model_array = np.asarray(model_array)
+    
+    # Multiply matrix together 
+    predictions = np.multiply(xt, model_array)
+    predictions = np.sum(predictions, axis = 1)
+
+    return predictions
 
 def quater_maker(d):
     """
