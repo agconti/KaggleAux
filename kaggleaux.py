@@ -17,7 +17,8 @@ def ml_formula(y, df):
     formula = y +' ~'
     for i, val in enumerate(df.columns):
         if i != 0 and val != y:
-    formula += ' + ' + val 
+            formula += ' + ' + val
+    return formula 
 
 def bin_residuals(resid, var, bins):
     '''
