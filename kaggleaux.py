@@ -16,59 +16,13 @@ def ml_formula(y, df):
     '''
     formula = y +' ~'
     for i, val in enumerate(df.columns):
+        if i == 0 and val != y:
+            formula += val
         if i != 0 and val != y:
             formula += ' + ' + val
     return formula 
 
-def bin_residuals(resid, var, bins):
-    '''
-    Compute average residuals within bins of a variable.
-    
-    Returns a dataframe indexed by the bins, with the bin midpoint,
-    the residual average within the bin, and the confidence interval 
-    bounds.
-    
-    ins 
-    -- 
-    resid, var, bins
 
-    out
-    --
-    bin DataFrame
-
-    '''
-    from pandas import DataFrame, qcut
-    import NumPy as np
-
-    resid_df = DataFrame({'var': var, 'resid': resid})
-    resid_df['bins'] = qcut(var, bins)
-    bin_group = resid_df.groupby('bins')
-    bin_df = bin_group['var', 'resid'].mean()
-    bin_df['count'] = bin_group['resid'].count()
-    bin_df['lower_ci'] = -2 * (bin_group['resid'].std() / 
-                               np.sqrt(bin_group['resid'].count()))
-    bin_df['upper_ci'] =  2 * (bin_group['resid'].std() / 
-                               np.sqrt(bin_df['count']))
-    bin_df = bin_df.sort('var')
-    return(bin_df)
-
-def plot_binned_residuals(bin_df):
-    '''
-    Plotted binned residual averages and confidence intervals.
-    
-    ins
-    --
-    bin_df ie from bin_residuals(resid, var, bins)
-    outs
-    --
-    pretty plots
-    '''
-    import matplotlib as plt
-
-    plt.plot(bin_df['var'], bin_df['resid'], '.')
-    plt.plot(bin_df['var'], bin_df['lower_ci'], '-r')
-    plt.plot(bin_df['var'], bin_df['upper_ci'], '-r')
-    plt.axhline(0, color = 'gray', lw = .5)
 
 def progress(i, num_tasks):
     '''
@@ -327,3 +281,53 @@ def describe_frame(df):
     stats = DataFrame(sum_stats)
     stats
     return stats
+
+def bin_residuals(resid, var, bins):
+    '''
+    Compute average residuals within bins of a variable.
+    
+    Returns a dataframe indexed by the bins, with the bin midpoint,
+    the residual average within the bin, and the confidence interval 
+    bounds.
+    
+    ins 
+    -- 
+    resid, var, bins
+
+    out
+    --
+    bin DataFrame
+
+    '''
+    from pandas import DataFrame, qcut
+    import NumPy as np
+
+    resid_df = DataFrame({'var': var, 'resid': resid})
+    resid_df['bins'] = qcut(var, bins)
+    bin_group = resid_df.groupby('bins')
+    bin_df = bin_group['var', 'resid'].mean()
+    bin_df['count'] = bin_group['resid'].count()
+    bin_df['lower_ci'] = -2 * (bin_group['resid'].std() / 
+                               np.sqrt(bin_group['resid'].count()))
+    bin_df['upper_ci'] =  2 * (bin_group['resid'].std() / 
+                               np.sqrt(bin_df['count']))
+    bin_df = bin_df.sort('var')
+    return(bin_df)
+
+def plot_binned_residuals(bin_df):
+    '''
+    Plotted binned residual averages and confidence intervals.
+    
+    ins
+    --
+    bin_df ie from bin_residuals(resid, var, bins)
+    outs
+    --
+    pretty plots
+    '''
+    import matplotlib as plt
+
+    plt.plot(bin_df['var'], bin_df['resid'], '.')
+    plt.plot(bin_df['var'], bin_df['lower_ci'], '-r')
+    plt.plot(bin_df['var'], bin_df['upper_ci'], '-r')
+    plt.axhline(0, color = 'gray', lw = .5)
