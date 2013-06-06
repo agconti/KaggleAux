@@ -3,7 +3,10 @@ A module of auxiliary functions to aid competitors in Kaggle competitions. You m
 
 
 Functions include:
-* def ml_formula(y, df):
+<ul>
+    <li><p>
+    
+<pre><code>def ml_formula(y, df):
     '''
     a simple function to create a formula using all available features for patsy dmatrices function. 
 
@@ -16,9 +19,11 @@ Functions include:
     outs 
     ---
     a string of the desired formula
-    '''
+    '''</code></pre>
 
-* def progress(i, num_tasks):
+    </p></li>
+    <li><p>
+<pre><code>def progress(i, num_tasks):
     '''
     A simple textual progress bar
     
@@ -31,8 +36,10 @@ Functions include:
     --
     A progress bar like [#########  ]
     '''
-    
-* def cat_clean(s):
+    </code></pre>
+</p></li>
+    <li><p>
+<pre><code>def cat_clean(s):
     """
     Cleans categorical variables of NaNs by setting the NaN to 0 so it can be processed by a patsy dmatrices function.
 
@@ -44,8 +51,10 @@ Functions include:
     --
     cat value or int 0 in place of a NaN val
     """
-
-def predict(test_data, results, i):
+    </code></pre>
+</p></li>
+    <li><p>
+<pre><code>def predict(test_data, results, i):
     """ 
     Returns a NumPy array of independent variable predictions of a test file based on your regression of a train file. Built for speed
     
@@ -63,8 +72,10 @@ def predict(test_data, results, i):
     Predictions in a flat NumPy array. 
     AGC 2013
     """
-
-def quater_maker(d):
+    </code></pre>
+</p></li>
+    <li><p>
+<pre><code>def quater_maker(d):
     """
     Pareses dates and returns the appropriate quarter.
     --
@@ -76,8 +87,10 @@ def quater_maker(d):
     
     AGC 2013
     """
-
-def score_rmsle(y, df, df2, p = 0):
+    </code></pre>
+</p></li>
+    <li><p>
+<pre><code>def score_rmsle(y, df, df2, p = 0):
     '''
     ins 
     --
@@ -90,8 +103,10 @@ def score_rmsle(y, df, df2, p = 0):
     prints rmsle
     rmsle as a float
     '''
-
-def score_rmse(y, df, df2, p = 0 ):
+    </code></pre>
+</p></li>
+    <li><p>
+<pre><code>def score_rmse(y, df, df2, p = 0 ):
     """
     ins 
     --
@@ -105,8 +120,10 @@ def score_rmse(y, df, df2, p = 0 ):
     prints rmse
     rmse as a float
     """
-
-def unwanted_pals(x, s = .1):
+    </code></pre>
+</p></li>
+    <li><p>
+<pre><code>def unwanted_pals(x, s = .1):
     '''
     Inputs 
     --
@@ -117,8 +134,10 @@ def unwanted_pals(x, s = .1):
     --
     returns a list of columns below significance level
     '''
-
-def stock_price_at_date(x, ticker, lag=0):
+    </code></pre>
+</p></li>
+    <li><p>
+<pre><code>def stock_price_at_date(x, ticker, lag=0):
     '''
     ins
     --
@@ -130,8 +149,10 @@ def stock_price_at_date(x, ticker, lag=0):
     --
     stock price.
     '''
-
-def describe_frame(df):
+    </code></pre>
+</p></li>
+<li><p>
+<pre><code>def describe_frame(df):
     """
     ins 
     ---
@@ -143,8 +164,10 @@ def describe_frame(df):
 
     agc2013
     """
-
-def bin_residuals(resid, var, bins):
+    </code></pre>
+</p></li>
+<li><p>
+<pre><code>def bin_residuals(resid, var, bins):
     '''
     Compute average residuals within bins of a variable.
     
@@ -161,8 +184,10 @@ def bin_residuals(resid, var, bins):
     bin DataFrame
 
     '''
-
-def plot_binned_residuals(bin_df):
+    </code></pre>
+</p></li>
+<li><p>
+<pre><code>def plot_binned_residuals(bin_df):
     '''
     Plotted binned residual averages and confidence intervals.
     
@@ -173,3 +198,6 @@ def plot_binned_residuals(bin_df):
     --
     pretty plots
     '''
+    </code></pre>
+</p></li>
+</ul>
