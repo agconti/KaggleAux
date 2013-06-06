@@ -5,7 +5,6 @@ A module of auxiliary functions to aid competitors in Kaggle competitions. You m
 Functions include:
 <ul>
     <li><p>
-    
 <pre><code>def ml_formula(y, df):
     '''
     a simple function to create a formula using all available features for patsy dmatrices function. 
