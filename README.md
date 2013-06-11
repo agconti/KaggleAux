@@ -1,5 +1,5 @@
 ##AGC_KaggleAux
-A module of auxiliary functions to aid competitors in Kaggle competitions. You may use these functions only in accordance with the included license.
+A module of statistical tools as auxiliary functions to aid Data Science competitors in Kaggle Competitions. 
 
 
 Functions include:
