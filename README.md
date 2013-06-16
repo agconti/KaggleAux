@@ -1,5 +1,5 @@
 ##AGC_KaggleAux
-A module of statistical tools as auxiliary functions to aid Data Science competitors in Kaggle Competitions. 
+A collection of statistical tools to aid Data Science competitors in Kaggle Competitions. 
 
 
 Functions include:
