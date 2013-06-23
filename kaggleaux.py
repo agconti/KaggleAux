@@ -14,7 +14,7 @@ def ml_formula(y, df):
     ---
     a string of the desired formula
     '''
-    formula = y +' ~'
+    formula = y +' ~ '
     for i, val in enumerate(df.columns):
         if i == 0 and val != y:
             formula += val
