@@ -1,5 +1,17 @@
 # Kaggel Auxillary Functions
 # AGC 2013
+def cat_bool_maker(s):
+    '''
+    when used with the pandas df.series.apply() method,  it will create a boolean cat var. 
+    if values exist the bool will register as 1 
+    if nan vaues esit the bool will register as 0
+
+    '''
+    if np.isnan(s) == True:
+        return 0
+    else:
+        return 1
+    
 def ml_formula(y, df):
     '''
     a simple function to create a formula using all available features for patsy dmatrices function. 
@@ -255,6 +267,9 @@ def stock_price_at_date(x, ticker, lag=0):
     return r
 
 def side_by_side(*objs, **kwds):
+    '''
+    created by wes mickinney, it only exists here becuase I use this function all the time. 
+    '''
     from pandas.core.common import adjoin
     space = kwds.get('space', 4)
     reprs = [repr(obj).split('\n') for obj in objs]
@@ -301,7 +316,7 @@ def bin_residuals(resid, var, bins):
     '''
     from pandas import DataFrame, qcut
     import NumPy as np
-
+    # use scipy's binned stat method
     resid_df = DataFrame({'var': var, 'resid': resid})
     resid_df['bins'] = qcut(var, bins)
     bin_group = resid_df.groupby('bins')
