@@ -1,5 +1,29 @@
 # Kaggel Auxillary Functions
 # AGC 2013
+def dataframe_welch_ttest(df, desc_frame):
+    '''
+    Takes in a dataframe, and a described dataframe ( from the desribe_frame() method)
+    
+    returns
+    
+    t-statistic and p-value for each feature in a pandas dataframe
+    ''' 
+    import scipy as sp
+    import numpy as np
+    desc_frame['t-statistic'] = np.nan
+    desc_frame['p-value'] = np.nan
+    
+    for name,item in df.iteritems():
+        try :
+            res = sp.stats.ttest_ind(df[name][df.sued_bool == 0].dropna(), 
+                                    df[name][df.sued_bool == 1].dropna(),
+                                    equal_var=False
+                                    )
+        except:
+            res = (np.nan, np.nan)
+            
+        desc_frame.ix[name,'t-statistic'], desc_frame.ix[name,'p-value'] = res
+            
 def cat_bool_maker(s):
     '''
     when used with the pandas df.series.apply() method,  it will create a boolean cat var. 
