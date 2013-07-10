@@ -1,5 +1,28 @@
 # Kaggel Auxillary Functions
-# AGC 2013
+# Copy-Write AGC 2013
+
+def cross_validate_df(df, percent):
+    '''
+    Randomly samples a percentage of a pandas dataframe for cross validation or for down sampleing
+    
+    ins
+    --
+    df -- to be sampled **expects an ordinal index ** ie. 0 - 100
+    percent -- as an int of the percentage to be sampled (ie 25 for 25%)
+    
+    out
+    --
+    (df_h1, df_h2) -- both halfs of the split data frame
+    
+    ex.
+    small_df_half,large_df_half  = cross_validate_df(df,33)
+    '''
+    sample_percentage = int(np.round(((percent * df.index.size) / float(100))))
+    rows = np.random.randint(0, df.index.size, sample_percentage)
+    df_h1 = df.ix[rows]
+    df_h2 = df.drop(rows)
+    return (df_h1, df_h2)
+
 def dataframe_welch_ttest(df, desc_frame):
     '''
     Takes in a dataframe, and a described dataframe ( from the desribe_frame() method)
