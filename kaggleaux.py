@@ -59,6 +59,41 @@ def cat_bool_maker(s):
     else:
         return 1
     
+def columns_to_str(column_list, return_list=0):
+    '''
+    takes the pandas df. columns method and returns a list with items as strings for easy implementaiton into pandas fucntions
+    
+    ins
+    --
+    column_list -- ussually from pandas df.columns function but can be any list
+    
+    return_list -- optional param to return the str list ( use 1 to return)
+    
+    out 
+    --
+    a list with str elements
+    
+    ex.
+    
+    columns_to_str(df.columns)
+    
+    Changes
+    
+    Index([x3yv_E, x3yv_D, x1yv_E, x1yv_D], dtype=object)
+    
+    to
+    
+    Index(['x3yv_E', 'x3yv_D', 'x1yv_E', 'x1yv_D'], dtype=object)
+    '''
+    if return_list == 1:
+        output = []
+        for i in column_list:
+            output.append(str(i))
+        return output
+    
+    print "[%s]" % "', '".join(map(str, column_list))
+    
+    
 def ml_formula(y, df):
     '''
     a simple function to create a formula using all available features for patsy dmatrices function. 
