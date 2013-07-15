@@ -92,7 +92,40 @@ def columns_to_str(column_list, return_list=0):
         return output
     
     print "[%s]" % "', '".join(map(str, column_list))
+
+def columns_to_plus(column_list, return_list=0):
+    '''
+    takes the pandas df. columns method and returns a list with items connected with a plus for easy implementaiton into patys's dmatrices function
     
+    ins
+    --
+    column_list -- ussually from pandas df.columns function but can be any list
+    
+    return_list -- optional param to return the str list ( use 1 to return)
+    
+    out 
+    --
+    a list with elements conncted with a plus 
+    
+    ex.
+    
+    columns_to_str(df.columns)
+    
+    Changes
+    
+    Index([x3yv_E, x3yv_D, x1yv_E, x1yv_D], dtype=object)
+    
+    to
+    
+    Index([x3yv_E + x3yv_D + x1yv_E + x1yv_D], dtype=object)
+    '''
+    if return_list == 1:
+        output = []
+        for i in column_list:
+            output.append(str(i))
+        return output
+    
+    print "[%s]" % " + ".join(map(str, column_list))
     
 def ml_formula(y, df):
     '''
