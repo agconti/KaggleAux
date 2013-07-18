@@ -126,6 +126,29 @@ def columns_to_plus(column_list, return_list=0):
         return output
     
     print "[%s]" % " + ".join(map(str, column_list))
+
+def add_to_model_subspace(subspace_def, var):
+    '''
+    come on, it does what it says.
+    
+    basic check to easily add vars to model subspace definitions. 
+    
+    ins
+    --
+    var - list, that thing(s) your trying to add
+    subspace_def - list defining your models subspace
+    
+    out
+    --
+    subspace_def - list defining your models subspace w/ var added
+    '''
+    for i in range(0, len(var)):  
+        if (var[i] in model_subspace) == False:
+            var[i] = str(var[i])
+            assert isinstance(var[i], str)
+            subspace_def.append(var[i])
+    
+    #return subspace_def
     
 def ml_formula(y, df):
     '''
