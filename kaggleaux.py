@@ -143,7 +143,7 @@ def add_to_model_subspace(subspace_def, var):
     subspace_def - list defining your models subspace w/ var added
     '''
     for i in range(0, len(var)):  
-        if (var[i] in model_subspace) == False:
+        if (var[i] in subspace_def) == False:
             var[i] = str(var[i])
             assert isinstance(var[i], str)
             subspace_def.append(var[i])
