@@ -47,7 +47,7 @@ def dataframe_kfolds(df):
     
     ninety_pct_sample = np.delete(obs_to_extract, ten_pct_sample) # gives us the complement
     
-    return df.ix[[ten_pct_sample],:], df.ix[[ninety_pct_sample],:]
+    return df.ix[ten_pct_sample,:], df.ix[ninety_pct_sample,:]
     
 
 def dataframe_welch_ttest(df, desc_frame):
