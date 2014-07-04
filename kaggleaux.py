@@ -58,7 +58,7 @@ def get_dataframes_intersections(df1, comparator1, df2, comparator2):
 
 def predict(test_data, results, model_name):
     """
-    Return a predictions of based on model resutls.
+    Return predictions of based on model resutls.
 
     Parameters
     ----------
