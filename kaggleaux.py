@@ -17,7 +17,6 @@ def get_dataframe_intersection(df, comparator1,comparator2):
 
     Parameters
     ----------
-
     comparator1: DataFrame
         DataFrame to preform comparison on.
     comparator2: DataFrame
@@ -39,7 +38,6 @@ def get_dataframes_intersections(df1, comparator1, df2, comparator2):
 
     Parameters
     ----------
-
     comparator1: DataFrame
         DataFrame to preform comparison on.
     comparator2: DataFrame
@@ -105,6 +103,7 @@ def predict(test_data, results, model_name):
     # Multiply matrix together
     predictions = np.multiply(xt, model_array)
     predictions = np.sum(predictions, axis=1)
+    return predictions
 
 
 def cross_validate_df(df, percent):
@@ -355,15 +354,11 @@ def cat_clean(s):
     --
     cat value or int 0 in place of a NaN val
     """
-    import numpy as np
-
     if isinstance(s, str) == False and np.isnan(s) == True:
         s = 0
     return s
 
 
-
-    return predictions
 def quater_maker(d):
     """
     Pareses dates and returns the appropriate quarter.
@@ -417,7 +412,7 @@ def score_rmsle(y, df, df2, p = 0):
         print "rsmle: " + str(rsmle)
     return rsmle
 
-def score_rmse(y, df, df2, p = 0 ):
+def score_rmse(y, df, df2, p=0 ):
     """
     ins
     --
