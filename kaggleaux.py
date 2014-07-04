@@ -58,8 +58,7 @@ def get_dataframes_intersections(df1, comparator1, df2, comparator2):
 
 def predict(test_data, results, model_name):
     """
-    Return a NumPy array of independent variable predictions of a test file
-    basedon your regression of a train file.
+    Return a predictions of based on model resutls.
 
     Parameters
     ----------
