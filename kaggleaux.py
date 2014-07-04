@@ -1,90 +1,200 @@
 # Kaggel Auxillary Functions
 # AGC - 2013
+import sys
+from datetime import timedelta
+import numpy as np
+import scipy as sp
+import matplotlib as plt
+from pandas import DataFrame, Series, qcut
+from pandas.core.common import adjoin
+from pandas.io.data import DataReader
+from patsy import dmatrices
 
 def cross_validate_df(df, percent):
     '''
-    Randomly samples a percentage of a pandas dataframe for cross validation or for down sampleing
+    Return a randomly shuffled supbsets of a DataFrame cross validation
+    or for down sampleing.
 
-    ins
-    --
-    df -- to be sampled **expects an ordinal index ** ie. 0 - 100
-    percent -- as an int of the percentage to be sampled (ie 25 for 25%)
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame to be sampled. Expects an ordinal index; ie. 0 - 100.
+    percent: Int
+         the percentage to split of the returned subsets.
 
-    out
-    --
-    (df_h1, df_h2) -- both halfs of the split data frame
+    Returns
+    -------
+    Tuple:
+        (df_h1, df_h2), both parts of the split randomly shuffled DataFrame
 
-    ex.
-    small_df_half,large_df_half  = cross_validate_df(df,33)
+    Example
+    -------
+    small_df_half, large_df_half  = cross_validate_df(df, 33)
     '''
-    sample_percentage = int(np.round(((percent * df.index.size) / float(100))))
-    rows = np.random.randint(0, df.index.size, sample_percentage)
-    df_h1 = df.ix[rows]
-    df_h2 = df.drop(rows)
-    return (df_h1, df_h2)
+    sample_percentage_of_dataframe = int(np.round(((percent * df.index.size) / float(100))))
+    rows = np.random.randint(0, df.index.size, sample_percentage_of_dataframe)
+    return (df.ix[rows], df.drop(rows))
 
 def dataframe_kfolds(df):
     '''
-    standard kfolds cross cross_validate
+    Standard kfolds cross cross_validate method.
 
-    in
-    --
-    DataFrame
+    Parameters
+    ----------
+    df : DataFrame
+        A pandas dataframe to be operated on.
 
-    out
-    --
-    dataframe 10%, dataframe 90% -- random splits using python's random.choice()
-
-    *suitable for large datasets
+    Returns
+    -------
+    Tuple :
+        dataframe 10%, dataframe 90% -- random splits using python's random.choice()
     '''
-    import random
-    import numpy as np
-    obs_to_extract = df.index
-
-    # get random 10% subsection of data
-    for i in xrange(0, round(df.index.size * 0.10)):
-        ten_pct_sample.append(random.choice(obs_to_extract))
-
-    ninety_pct_sample = np.delete(obs_to_extract, ten_pct_sample) # gives us the complement
-
-    return df.ix[ten_pct_sample,:], df.ix[ninety_pct_sample,:]
+    return cross_validate_df(df, 90)
 
 
-def dataframe_welch_ttest(df, desc_frame):
+def dataframe_welch_ttest(df, described_frame, boolean_feature):
     '''
-    Takes in a dataframe, and a described dataframe ( from the desribe_frame() method)
+    Parameters
+    ----------
+    df : DataFrame
+       A DataFrame to perfrom welch_ttest on.
+    described_frame : DataFrame
+       A described DataFrame from the pandas desribe_frame() method.
+    boolean_feature: Str
+       Name of boolean feature to conduct test on.
 
-    returns
-
-    t-statistic and p-value for each feature in a pandas dataframe
+    Returns
+    -------
+    DataFrame :
+        t-statistic and p-value for each feature in a pandas dataframe.
     '''
-    import scipy as sp
-    import numpy as np
-    desc_frame['t-statistic'] = np.nan
-    desc_frame['p-value'] = np.nan
 
-    for name,item in df.iteritems():
-        try :
-            res = sp.stats.ttest_ind(df[name][df.sued_bool == 0].dropna(),
-                                    df[name][df.sued_bool == 1].dropna(),
-                                    equal_var=False
-                                    )
-        except:
-            res = (np.nan, np.nan)
+    described_frame['t-statistic'] = np.nan
+    described_frame['p-value'] = np.nan
 
-        desc_frame.ix[name,'t-statistic'], desc_frame.ix[name,'p-value'] = res
+    for name, item in df.iteritems():
+        result = sp.stats.ttest_ind(df[name][df[boolean_feature] == 0].dropna(),
+                                        df[name][df[boolean_feature] == 1].dropna(),
+                                        equal_var=False)
+        described_frame.ix[name, 't-statistic'], described_frame.ix[name, 'p-value'] = result
+    return described_frame
 
-def cat_bool_maker(s):
+def category_boolean_maker(series):
     '''
-    when used with the pandas df.series.apply() method,  it will create a boolean cat var.
-    if values exist the bool will register as 1
-    if nan vaues esit the bool will register as 0
+    A funtction for to designate missing records from observed ones.
+
+    When used with the pandas df.series.apply() method, it will create
+    a boolean category variable. If values exist the bool will register
+    as 1, if nan values exist the bool will register as 0.
+
+    Parameters
+    ----------
+    series : Series
+        A pandas series to perform comparision on.
+
+    Returns
+    -------
+    Int :
+        0 or 1 for missing values.
+
 
     '''
-    if np.isnan(s) == True:
-        return 0
-    else:
-        return 1
+    return 0 if np.isnan(series) == True else 1
+def get_dataframe_intersection(df, comparator1,comparator2):
+    """
+    Return a dataframe with only the columns found in a comparative dataframe.
+
+    Parameters
+    ----------
+
+    comparator1: DataFrame
+        DataFrame to preform comparison on.
+    comparator2: DataFrame
+        DataFrame to compare with.
+
+    Returns
+    -------
+    DataFrame:
+        Data frame with columns not found in comparator dropped.
+
+    """
+    to_drop = list((c for c in comparator1 if c not in comparator2))
+    return df.drop(to_drop, axis=1)
+
+
+def get_dataframes_intersections(df1, comparator1, df2, comparator2):
+    """
+    Return DataFrames with the intersection of their column values.
+
+    Parameters
+    ----------
+
+    comparator1: DataFrame
+        DataFrame to preform comparison on.
+    comparator2: DataFrame
+        DataFrame to compare with.
+
+    Returns
+    -------
+    Tuple:
+        The resultingDataframe with columns not found in comparator dropped.
+
+    """
+    comparator1 = get_dataframe_intersection(df1, comparator1, comparator2)
+    comparator2 = get_dataframe_intersection(df2, comparator2, comparator1)
+    return comparator1, comparator2
+
+
+def predict(test_data, results, model_name):
+    """
+    Return a NumPy array of independent variable predictions of a test file
+    basedon your regression of a train file.
+
+    Parameters
+    ----------
+    test_data: DataFrame
+        should be test data you are trying to predict
+    results: Dict
+        should be dict of your models results wrapper and the formula used
+        to produce it.
+            ie.
+            results['Model_Name'] = {[<statsmodels.regression.linear_model.RegressionResultsWrapper> , "Price ~ I(Supply, Demand)] }
+    model_name: Str
+        should be the name of your model. You can iterate through the results dict.
+
+    Returns
+    -------
+    NumPy array
+        Predictions in a flat NumPy array.
+
+    Example
+    -------
+    results = {'Logit': [<statsmodels.discrete.discrete_model.BinaryResultsWrapper at 0x117896650>,
+               'survived ~ C(pclass) + C(sex) + age + sibsp  + C(embarked)']}
+    compared_resuts = predict(test_data, results, 'Logit')
+    """
+    model_params = DataFrame(results[model_name][0].params)
+    formula = results[model_name][1]
+
+    # Create regression friendly test DataFrame
+    yt, xt = dmatrices(formula, data=test_data, return_type='dataframe')
+    xt, model_params = get_dataframes_intersections(xt, xt.columns,
+                                                    model_params, model_params.index)
+    # Convert to NumPy arrays for performance
+    model_params = np.asarray(model_params)
+    yt = np.asarray(yt)
+    yt = yt.ravel()
+    xt = np.asarray(xt)
+
+    # Use our models to create predictions
+    row, col = xt.shape
+    model_parameters = model_params.ravel()
+    model_array = list((model_parameters for parameter in xrange(row)))
+    model_array = np.asarray(model_array)
+
+    # Multiply matrix together
+    predictions = np.multiply(xt, model_array)
+    predictions = np.sum(predictions, axis=1)
 
 def columns_to_str(column_list, return_list=0):
     '''
@@ -214,8 +324,6 @@ def progress(i, num_tasks):
     --
     A progress bar like [#########  ]
     '''
-    import sys
-
     progress = "\r["
 
     for _ in range (0,i):
@@ -247,72 +355,9 @@ def cat_clean(s):
         s = 0
     return s
 
-def predict(test_data, results, i):
-    """
-    Returns a NumPy array of independent variable predictions of a test file based on your regression of a train file. Built for speed
 
-    Parameters
-    --
-    Test_data: should be test data you are trying to predict in a pandas dataframe
-    results: should be dict of your models results wrapper and the formula used to produce it.
-        ie.
-        results['Model_Name'] = {[<statsmodels.regression.linear_model.RegressionResultsWrapper> , "Price ~ I(Supply, Demand)] }
-    i: should be the name of your model. You can iterate through the results dict.
-    --
-
-    Returns
-    --
-    Predictions in a flat NumPy array.
-    AGC 2013
-    """
-    import numpy as np
-    from pandas import DataFrame
-    from patsy import dmatrices
-
-
-    model_params = DataFrame(results[i][0].params)
-    formula = results[i][1]
-
-    # Create reg friendly test dataframe
-    yt, xt = dmatrices(formula, data=test_data, return_type='dataframe')
-
-
-    # remove extraneous features for efficiency
-    to_drop = list()
-    to_drop[:] = [] # Empty list, in case cells are executed out of order
-    for c in xt.columns:
-        if c not in model_params.index:
-            to_drop.append(c)
-    xt = xt.drop(to_drop, axis=1)
-
-    to_drop[:] = [] # Empty list
-    for c in model_params.index :
-        if c not in xt.columns:
-            to_drop.append(c)
-    model_params = model_params.drop(to_drop)
-
-    # Convert to NumPy arrays for performance
-    model_params = np.asarray(model_params)
-    yt = np.asarray(yt)
-    yt = yt.ravel()
-    xt = np.asarray(xt)
-
-
-    # Use our models to create predictions
-    row, col = xt.shape
-    model_params = model_params.ravel() # flatten array
-    model_array = []
-
-    for _ in xrange(row):
-            model_array.append(model_params)
-    model_array = np.asarray(model_array)
-
-    # Multiply matrix together
-    predictions = np.multiply(xt, model_array)
-    predictions = np.sum(predictions, axis = 1)
 
     return predictions
-
 def quater_maker(d):
     """
     Pareses dates and returns the appropriate quarter.
@@ -357,8 +402,6 @@ def score_rmsle(y, df, df2, p = 0):
     prints rmsle
     rmsle as a float
     '''
-    import numpy as np
-
     prediction = np.asarray(df[y])
     actual = np.asarray(df2[y])
 
@@ -382,8 +425,6 @@ def score_rmse(y, df, df2, p = 0 ):
     prints rmse
     rmse as a float
     """
-    import numpy as np
-
     prediction = np.asarray(df[y])
     actual = np.asarray(df2[y])
 
@@ -423,9 +464,6 @@ def stock_price_at_date(x, ticker, lag=0):
     --
     stock price.
     '''
-    from pandas.io.data import DataReader
-    from datetime import date, timedelta
-
     x = (x - timedelta(days = lag))
     r = DataReader(ticker,start=x, end=x, data_source='yahoo')
     r = r.ix[0,5]
@@ -435,7 +473,6 @@ def side_by_side(*objs, **kwds):
     '''
     created by wes mickinney, it only exists here becuase I use this function all the time.
     '''
-    from pandas.core.common import adjoin
     space = kwds.get('space', 4)
     reprs = [repr(obj).split('\n') for obj in objs]
     print adjoin(space, *reprs)
@@ -452,7 +489,6 @@ def describe_frame(df):
 
     agc2013
     """
-    from pandas import Series, DataFrame
     sum_stats = []
     for i in df.columns:
         x = Series(df[i].describe())
@@ -479,9 +515,6 @@ def bin_residuals(resid, var, bins):
     bin DataFrame
 
     '''
-    from pandas import DataFrame, qcut
-    import NumPy as np
-    # use scipy's binned stat method
     resid_df = DataFrame({'var': var, 'resid': resid})
     resid_df['bins'] = qcut(var, bins)
     bin_group = resid_df.groupby('bins')
@@ -505,8 +538,6 @@ def plot_binned_residuals(bin_df):
     --
     pretty plots
     '''
-    import matplotlib as plt
-
     plt.plot(bin_df['var'], bin_df['resid'], '.')
     plt.plot(bin_df['var'], bin_df['lower_ci'], '-r')
     plt.plot(bin_df['var'], bin_df['upper_ci'], '-r')
