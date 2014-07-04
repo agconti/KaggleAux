@@ -10,96 +10,7 @@ from pandas.core.common import adjoin
 from pandas.io.data import DataReader
 from patsy import dmatrices
 
-def cross_validate_df(df, percent):
-    '''
-    Return a randomly shuffled supbsets of a DataFrame cross validation
-    or for down sampleing.
 
-    Parameters
-    ----------
-    df : DataFrame
-        DataFrame to be sampled. Expects an ordinal index; ie. 0 - 100.
-    percent: Int
-         the percentage to split of the returned subsets.
-
-    Returns
-    -------
-    Tuple:
-        (df_h1, df_h2), both parts of the split randomly shuffled DataFrame
-
-    Example
-    -------
-    small_df_half, large_df_half  = cross_validate_df(df, 33)
-    '''
-    sample_percentage_of_dataframe = int(np.round(((percent * df.index.size) / float(100))))
-    rows = np.random.randint(0, df.index.size, sample_percentage_of_dataframe)
-    return (df.ix[rows], df.drop(rows))
-
-def dataframe_kfolds(df):
-    '''
-    Standard kfolds cross cross_validate method.
-
-    Parameters
-    ----------
-    df : DataFrame
-        A pandas dataframe to be operated on.
-
-    Returns
-    -------
-    Tuple :
-        dataframe 10%, dataframe 90% -- random splits using python's random.choice()
-    '''
-    return cross_validate_df(df, 90)
-
-
-def dataframe_welch_ttest(df, described_frame, boolean_feature):
-    '''
-    Parameters
-    ----------
-    df : DataFrame
-       A DataFrame to perfrom welch_ttest on.
-    described_frame : DataFrame
-       A described DataFrame from the pandas desribe_frame() method.
-    boolean_feature: Str
-       Name of boolean feature to conduct test on.
-
-    Returns
-    -------
-    DataFrame :
-        t-statistic and p-value for each feature in a pandas dataframe.
-    '''
-
-    described_frame['t-statistic'] = np.nan
-    described_frame['p-value'] = np.nan
-
-    for name, item in df.iteritems():
-        result = sp.stats.ttest_ind(df[name][df[boolean_feature] == 0].dropna(),
-                                        df[name][df[boolean_feature] == 1].dropna(),
-                                        equal_var=False)
-        described_frame.ix[name, 't-statistic'], described_frame.ix[name, 'p-value'] = result
-    return described_frame
-
-def category_boolean_maker(series):
-    '''
-    A funtction for to designate missing records from observed ones.
-
-    When used with the pandas df.series.apply() method, it will create
-    a boolean category variable. If values exist the bool will register
-    as 1, if nan values exist the bool will register as 0.
-
-    Parameters
-    ----------
-    series : Series
-        A pandas series to perform comparision on.
-
-    Returns
-    -------
-    Int :
-        0 or 1 for missing values.
-
-
-    '''
-    return 0 if np.isnan(series) == True else 1
 def get_dataframe_intersection(df, comparator1,comparator2):
     """
     Return a dataframe with only the columns found in a comparative dataframe.
@@ -196,6 +107,101 @@ def predict(test_data, results, model_name):
     predictions = np.multiply(xt, model_array)
     predictions = np.sum(predictions, axis=1)
 
+
+def cross_validate_df(df, percent):
+    '''
+    Return a randomly shuffled supbsets of a DataFrame cross validation
+    or for down sampleing.
+
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame to be sampled. Expects an ordinal index; ie. 0 - 100.
+    percent: Int
+         the percentage to split of the returned subsets.
+
+    Returns
+    -------
+    Tuple:
+        (df_h1, df_h2), both parts of the split randomly shuffled DataFrame
+
+    Example
+    -------
+    small_df_half, large_df_half  = cross_validate_df(df, 33)
+    '''
+    sample_percentage_of_dataframe = int(np.round(((percent * df.index.size) / float(100))))
+    rows = np.random.randint(0, df.index.size, sample_percentage_of_dataframe)
+    return (df.ix[rows], df.drop(rows))
+
+
+def dataframe_kfolds(df):
+    '''
+    Standard kfolds cross cross_validate method.
+
+    Parameters
+    ----------
+    df : DataFrame
+        A pandas dataframe to be operated on.
+
+    Returns
+    -------
+    Tuple :
+        dataframe 10%, dataframe 90% -- random splits using python's random.choice()
+    '''
+    return cross_validate_df(df, 90)
+
+
+def dataframe_welch_ttest(df, described_frame, boolean_feature):
+    '''
+    Parameters
+    ----------
+    df : DataFrame
+       A DataFrame to perfrom welch_ttest on.
+    described_frame : DataFrame
+       A described DataFrame from the pandas desribe_frame() method.
+    boolean_feature: Str
+       Name of boolean feature to conduct test on.
+
+    Returns
+    -------
+    DataFrame :
+        t-statistic and p-value for each feature in a pandas dataframe.
+    '''
+
+    described_frame['t-statistic'] = np.nan
+    described_frame['p-value'] = np.nan
+
+    for name, item in df.iteritems():
+        result = sp.stats.ttest_ind(df[name][df[boolean_feature] == 0].dropna(),
+                                        df[name][df[boolean_feature] == 1].dropna(),
+                                        equal_var=False)
+        described_frame.ix[name, 't-statistic'], described_frame.ix[name, 'p-value'] = result
+    return described_frame
+
+
+def category_boolean_maker(series):
+    '''
+    A funtction for to designate missing records from observed ones.
+
+    When used with the pandas df.series.apply() method, it will create
+    a boolean category variable. If values exist the bool will register
+    as 1, if nan values exist the bool will register as 0.
+
+    Parameters
+    ----------
+    series : Series
+        A pandas series to perform comparision on.
+
+    Returns
+    -------
+    Int :
+        0 or 1 for missing values.
+
+
+    '''
+    return 0 if np.isnan(series) == True else 1
+
+
 def columns_to_str(column_list, return_list=0):
     '''
     takes the pandas df. columns method and returns a list with items as strings for easy implementaiton into pandas fucntions
@@ -229,6 +235,7 @@ def columns_to_str(column_list, return_list=0):
         return output
 
     print "[%s]" % "', '".join(map(str, column_list))
+
 
 def columns_to_plus(column_list, return_list=0):
     '''
