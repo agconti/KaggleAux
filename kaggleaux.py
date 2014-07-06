@@ -175,8 +175,8 @@ def dataframe_welch_ttest(df, described_frame, boolean_feature):
 
     for name, item in df.iteritems():
         result = sp.stats.ttest_ind(df[name][df[boolean_feature] == 0].dropna(),
-                                        df[name][df[boolean_feature] == 1].dropna(),
-                                        equal_var=False)
+                                    df[name][df[boolean_feature] == 1].dropna(),
+                                    equal_var=False)
         described_frame.ix[name, 't-statistic'], described_frame.ix[name, 'p-value'] = result
     return described_frame
 
