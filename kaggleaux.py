@@ -80,6 +80,7 @@ def predict(test_data, results, model_name):
     results = {'Logit': [<statsmodels.discrete.discrete_model.BinaryResultsWrapper at 0x117896650>,
                'survived ~ C(pclass) + C(sex) + age + sibsp  + C(embarked)']}
     compared_resuts = predict(test_data, results, 'Logit')
+
     """
     model_params = DataFrame(results[model_name][0].params)
     formula = results[model_name][1]
@@ -126,6 +127,7 @@ def cross_validate_df(df, percent):
     Example
     -------
     small_df_half, large_df_half  = cross_validate_df(df, 33)
+
     '''
     sample_percentage_of_dataframe = int(np.round(((percent * df.index.size) / float(100))))
     rows = np.random.randint(0, df.index.size, sample_percentage_of_dataframe)
@@ -145,6 +147,7 @@ def dataframe_kfolds(df):
     -------
     Tuple :
         dataframe 10%, dataframe 90% -- random splits using python's random.choice()
+
     '''
     return cross_validate_df(df, 90)
 
@@ -164,6 +167,7 @@ def dataframe_welch_ttest(df, described_frame, boolean_feature):
     -------
     DataFrame :
         t-statistic and p-value for each feature in a pandas dataframe.
+
     '''
 
     described_frame['t-statistic'] = np.nan
@@ -195,102 +199,70 @@ def category_boolean_maker(series):
     Int :
         0 or 1 for missing values.
 
-
     '''
     return 0 if np.isnan(series) == True else 1
 
 
-def columns_to_str(column_list, return_list=0):
+def columns_to_str(column_list, operand=', ', return_list=False):
     '''
-    takes the pandas df. columns method and returns a list with items as strings for easy implementaiton into pandas fucntions
+    Return the list of features as strings for easy implementaiton patsy formulas.
 
-    ins
-    --
-    column_list -- ussually from pandas df.columns function but can be any list
+    Parameters
+    ----------
+    column_list : list
+        A list of features, ussually from generated from pandas's df.columns function.
 
-    return_list -- optional param to return the str list ( use 1 to return)
+    operand : str
+        a sting to join list together by. Default is a comma: ', '. Could be a plus: ' + '
+        for patsy equations.
 
-    out
-    --
-    a list with str elements
+    return_list : boolean
+        ( optional ) return the list of features typecasted to str.
 
-    ex.
+    Returns
+    -------
+    list :
+        a list with elements typecasted to str.
+
+    Example
+    -------
+
+    df.columns
+    >>> Index([x3yv_E, x3yv_D, x1yv_E, x1yv_D], dtype=object)
 
     columns_to_str(df.columns)
+    >>> Index(['x3yv_E', 'x3yv_D', 'x1yv_E', 'x1yv_D'], dtype=object)
+    >>> ['x3yv_E', 'x3yv_D', 'x1yv_E', 'x1yv_D']
 
-    Changes
-
-    Index([x3yv_E, x3yv_D, x1yv_E, x1yv_D], dtype=object)
-
-    to
-
-    Index(['x3yv_E', 'x3yv_D', 'x1yv_E', 'x1yv_D'], dtype=object)
     '''
-    if return_list == 1:
-        output = []
-        for i in column_list:
-            output.append(str(i))
-        return output
+    if return_list == True:
+        return list((str(feature) for feature in column_list))
 
-    print "[%s]" % "', '".join(map(str, column_list))
+    print "[%s]" % operand.join(map(str, column_list))
 
 
-def columns_to_plus(column_list, return_list=0):
+def add_to_model_subspace(left, right):
     '''
-    takes the pandas df. columns method and returns a list with items connected with a plus for easy implementaiton into patys's dmatrices function
+    Returns the intersection between two lists.
 
-    ins
-    --
-    column_list -- ussually from pandas df.columns function but can be any list
+    Useful for defining a model's subspace variables with new added variables.
 
-    return_list -- optional param to return the str list ( use 1 to return)
+    Parameters
+    ----------
+    left : list
+        a list you'd like to add to.
 
-    out
-    --
-    a list with elements conncted with a plus
+    right : list
+        a list of things your trying to add
 
-    ex.
+    Returns
+    -------
+    list :
+        a list of the intersection between the passed in left and right lists.
 
-    columns_to_str(df.columns)
-
-    Changes
-
-    Index([x3yv_E, x3yv_D, x1yv_E, x1yv_D], dtype=object)
-
-    to
-
-    Index([x3yv_E + x3yv_D + x1yv_E + x1yv_D], dtype=object)
     '''
-    if return_list == 1:
-        output = []
-        for i in column_list:
-            output.append(str(i))
-        return output
-
-    print "[%s]" % " + ".join(map(str, column_list))
-
-def add_to_model_subspace(subspace_def, var):
-    '''
-    come on, it does what it says.
-
-    basic check to easily add vars to model subspace definitions.
-
-    ins
-    --
-    var - list, that thing(s) your trying to add
-    subspace_def - list defining your models subspace
-
-    out
-    --
-    subspace_def - list defining your models subspace w/ var added
-    '''
-    for i in range(0, len(var)):
-        if (var[i] in subspace_def) == False:
-            var[i] = str(var[i])
-            assert isinstance(var[i], str)
-            subspace_def.append(var[i])
-
-    #return subspace_def
+    return list((str(right[i]) for i in xrange(0, len(right))
+                if right[i] in left == False ))
 
 def ml_formula(y, df):
     '''
