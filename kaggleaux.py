@@ -241,7 +241,7 @@ def columns_to_str(column_list, operand=', ', return_list=False):
     print "[%s]" % operand.join(map(str, column_list))
 
 
-def add_to_model_subspace(left, right):
+def list_intersection(left, right):
     '''
     Returns the intersection between two lists.
 
