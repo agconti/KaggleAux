@@ -266,26 +266,34 @@ def list_intersection(left, right):
 
 def ml_formula(y, df):
     '''
-    a simple function to create a formula using all available features for patsy dmatrices function.
+    Returns a string as a formula for patsy's dmatrices function.
 
-    ins
-    --
-    y = a string of the variable your trying to predict
+    Parameters
+    ----------
+    y : str
+        a string of the variable your trying to predict.
+    df : DataFrame
+        the data frame your trying to make your predctions on.
 
-    df = the data frame your trying to make your predctions on
+    Returns
+    -------
+    str :
+        a string of the desired formula
 
-    outs
-    ---
-    a string of the desired formula
+    Example
+    -------
+    y = "icecream_sales"
+    df = pandas.DataFrame(columns=['icecream_sales','sunny_days', 'incidence_of_lactose_intolerance'])
+
+    ml_formula(y, df)
+    >>> 'icecream_sales ~ sunny_days + incidence_of_lactose_intolerance'
     '''
-    formula = y +' ~ '
-    for i, val in enumerate(df.columns):
-        if i == 0 and val != y:
-            formula += val
-        if i != 0 and val != y:
-            formula += ' + ' + val
-    return formula
+    independent_variable = y +' ~ '
+    dependent_variables = ""
 
+    dependent_variables += ' + '.join((val for i, val in enumerate(df.columns) if val != y))
+    formula = independent_variable + dependent_variables
+    return formula
 
 
 def progress(i, num_tasks):
