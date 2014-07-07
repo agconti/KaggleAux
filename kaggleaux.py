@@ -6,12 +6,11 @@ import numpy as np
 import scipy as sp
 import matplotlib as plt
 from pandas import DataFrame, Series, qcut
-from pandas.core.common import adjoin
 from pandas.io.data import DataReader
 from patsy import dmatrices
 
 
-def get_dataframe_intersection(df, comparator1,comparator2):
+def get_dataframe_intersection(df, comparator1, comparator2):
     """
     Return a dataframe with only the columns found in a comparative dataframe.
 
@@ -200,7 +199,7 @@ def category_boolean_maker(series):
         0 or 1 for missing values.
 
     '''
-    return 0 if np.isnan(series) == True else 1
+    return 0 if np.isnan(series) is True else 1
 
 
 def columns_to_str(column_list, operand=', ', return_list=False):
@@ -235,7 +234,7 @@ def columns_to_str(column_list, operand=', ', return_list=False):
     >>> ['x3yv_E', 'x3yv_D', 'x1yv_E', 'x1yv_D']
 
     '''
-    if return_list == True:
+    if return_list:
         return list((str(feature) for feature in column_list))
 
     print "[%s]" % operand.join(map(str, column_list))
@@ -262,7 +261,8 @@ def list_intersection(left, right):
 
     '''
     return list((str(right[i]) for i in xrange(0, len(right))
-                if right[i] in left == False ))
+                if right[i] in left is False))
+
 
 def ml_formula(y, df):
     '''
@@ -288,7 +288,7 @@ def ml_formula(y, df):
     ml_formula(y, df)
     >>> 'icecream_sales ~ sunny_days + incidence_of_lactose_intolerance'
     '''
-    independent_variable = y +' ~ '
+    independent_variable = y + ' ~ '
     dependent_variables = ""
 
     dependent_variables += ' + '.join((val for i, val in enumerate(df.columns) if val != y))
@@ -321,6 +321,7 @@ def progress(i, num_tasks):
 
     sys.stdout.write(progress)
     sys.stdout.flush()
+
 
 def cat_clean(s):
     """
@@ -370,6 +371,7 @@ def quater_maker(d):
       #manipulate months. say if  0<m4: return YYYY + Q1 ect.
       # then apply to dateline
 
+
 def score_rmsle(y, df, df2, p = 0):
     '''
     ins
@@ -391,6 +393,7 @@ def score_rmsle(y, df, df2, p = 0):
     if p == 1 :
         print "rsmle: " + str(rsmle)
     return rsmle
+
 
 def score_rmse(y, df, df2, p=0 ):
     """
@@ -416,6 +419,7 @@ def score_rmse(y, df, df2, p=0 ):
 
     return rsme
 
+
 def unwanted_pals(x, s = .1):
     '''
     Inputs
@@ -432,6 +436,7 @@ def unwanted_pals(x, s = .1):
         if z>s:
              dropl.append(x.index[i])
     return dropl
+
 
 def stock_price_at_date(x, ticker, lag=0):
     '''
@@ -470,6 +475,7 @@ def describe_frame(df):
     stats = DataFrame(sum_stats)
     return stats
 
+
 def bin_residuals(resid, var, bins):
     '''
     Compute average residuals within bins of a variable.
@@ -498,6 +504,7 @@ def bin_residuals(resid, var, bins):
                                np.sqrt(bin_df['count']))
     bin_df = bin_df.sort('var')
     return(bin_df)
+
 
 def plot_binned_residuals(bin_df):
     '''
