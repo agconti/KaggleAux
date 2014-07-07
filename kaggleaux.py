@@ -289,9 +289,8 @@ def ml_formula(y, df):
     >>> 'icecream_sales ~ sunny_days + incidence_of_lactose_intolerance'
     '''
     independent_variable = y + ' ~ '
-    dependent_variables = ""
 
-    dependent_variables += ' + '.join((val for i, val in enumerate(df.columns) if val != y))
+    dependent_variables = ' + '.join((val for i, val in enumerate(df.columns) if val != y))
     formula = independent_variable + dependent_variables
     return formula
 
