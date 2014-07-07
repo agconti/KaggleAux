@@ -442,13 +442,6 @@ def stock_price_at_date(x, ticker, lag=0):
     r = r.ix[0,5]
     return r
 
-def side_by_side(*objs, **kwds):
-    '''
-    created by wes mickinney, it only exists here becuase I use this function all the time.
-    '''
-    space = kwds.get('space', 4)
-    reprs = [repr(obj).split('\n') for obj in objs]
-    print adjoin(space, *reprs)
 
 def describe_frame(df):
     """
@@ -460,7 +453,6 @@ def describe_frame(df):
     ---
     descriptive stats on your dataframe, in dataframe.
 
-    agc2013
     """
     sum_stats = []
     for i in df.columns:
@@ -468,7 +460,6 @@ def describe_frame(df):
         x.name = i
         sum_stats.append(x)
     stats = DataFrame(sum_stats)
-    stats
     return stats
 
 def bin_residuals(resid, var, bins):
