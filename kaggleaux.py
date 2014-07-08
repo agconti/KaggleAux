@@ -295,31 +295,59 @@ def ml_formula(y, df):
     return formula
 
 
-def progress(i, num_tasks):
+class ProgressBar(object):
     '''
-    A simple textual progress bar
+    Return A simple textual progress bar.
 
-    Ins
-    --
-    i = should be an iterable value to measure the progress of your taks
-    num_tasks = total number of tasks
+    Parameters
+    ----------
+    tasks_completed : int
+        should be an incremented value to measure the progress of your tasks.
+    total_tasks : int
+        total number of tasks
 
-    outs
-    --
-    A progress bar like [#########  ]
+    Retruns
+    -------
+    str :
+        A progress bar like [#########  ]
+
+    Example
+    -------
+    progress_bar = ProgressBar(2)
+    def do_stuff():
+        # do somethings
+
+    progress_bar.update()
+    >>>[# ]
+
+    def do_more_things():
+        # do so many things
+
+    progress_bar.update()
+    >>>[##]
+
     '''
-    progress = "\r["
+    def __init__(total_tasks):
+        self.total_tasks = total_tasks
+        self.tasks_completed = 0
+        self.progress = "\r["
 
-    for _ in range (0,i):
-        progress += "#"
+    def increment(self):
+        self.tasks_completed += 1
 
-    for _ in range (i, num_tasks):
-        progress += " "
+        for completed_task in xrange(0, self.tasks_completed):
+            self.progress += "#"
 
-    progress += "]"
+        for incomplete_task in xrange(self.tasks_completed, self.total_tasks):
+            self.progress += " "
 
-    sys.stdout.write(progress)
-    sys.stdout.flush()
+    def show(self):
+        sys.stdout.write(self.progress + "]")
+        sys.stdout.flush()
+
+    def update(self):
+        self.increment()
+        self.show()
 
 
 def cat_clean(s):
@@ -344,7 +372,8 @@ def quater_maker(d):
     Pareses dates and returns the appropriate quarter.
     --
     Parameters
-    d: a python date time object
+    d:
+        a python date time object
     --
     Returns:
     The quarter in a string
