@@ -61,12 +61,12 @@ def predict(test_data, results, model_name):
     ----------
     test_data: DataFrame
         should be test data you are trying to predict
-    results: Dict
+    results: dict
         should be dict of your models results wrapper and the formula used
         to produce it.
             ie.
             results['Model_Name'] = {[<statsmodels.regression.linear_model.RegressionResultsWrapper> , "Price ~ I(Supply, Demand)] }
-    model_name: Str
+    model_name: str
         should be the name of your model. You can iterate through the results dict.
 
     Returns
@@ -350,54 +350,52 @@ class ProgressBar(object):
         self.show()
 
 
-def cat_clean(s):
+def category_clean(category_value):
     """
-    Cleans categorical variables of NaNs by setting the NaN to 0 so it can be processed by a patsy dmatrices function.
+    Retun a 0 for np.NaN values.
 
-    Inputs
-    --
-    s = cat value
+    Useful for cleaning categorical variables in a df.apply() function by
+    setting the NaN to 0 so it can be processed by a patsy dmatrices function.
 
-    output
-    --
-    cat value or int 0 in place of a NaN val
+    Parameters
+    ----------
+    category_value :
+        the category_value to be processed.
+
+    Retruns
+    -------
+        str / category_value :
+            category_value or int(0) in place of a NaN value.
+
     """
-    if isinstance(s, str) == False and np.isnan(s) == True:
-        s = 0
-    return s
+    if isinstance(category_value, str) is False and np.isnan(category_value) is True:
+        return 0
+    return category_value
 
 
 def quater_maker(d):
     """
-    Pareses dates and returns the appropriate quarter.
-    --
+    Return the corresponding quarter for a given date.
+
     Parameters
-    d:
-        a python date time object
-    --
-    Returns:
-    The quarter in a string
+    ----------
+    d: datetime object
+        The date you'd like to process
 
-    AGC 2013
+    Returns
+    -------
+    str :
+        The coresponding quarter in a string.
+        ie. 'Q1', 'Q2', 'Q3',  or 'Q4'
+
     """
-    r = ''
-    Q1 = [1, 2, 3]
-    Q2 = [4, 5, 6]
-    Q3 = [7, 8, 9]
-    Q4 = [10, 11, 12]
-    if d.month in Q1:
-        r = 'Q1'
-    if d.month in Q2:
-        r = 'Q2'
-    if d.month in Q3:
-        r = 'Q3'
-    if d.month in Q4:
-        r = 'Q4'
-    return r
-
-      #if date is within daterange, Q1 ect. then output ex: 2011 Q1
-      #manipulate months. say if  0<m4: return YYYY + Q1 ect.
-      # then apply to dateline
+    quaters = {
+        "Q1": [1, 2, 3]
+        "Q2": [4, 5, 6]
+        "Q3": [7, 8, 9]
+        "Q4": [10, 11, 12]
+    }
+    return key if d in quaters[key] for key in quaters.keys()
 
 
 def score_rmsle(y, df, df2, p = 0):
