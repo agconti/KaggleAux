@@ -398,26 +398,33 @@ def quater_maker(d):
     return key if d in quaters[key] for key in quaters.keys()
 
 
-def score_rmsle(y, df, df2, p = 0):
+def score_rmsle(y, df, df2, p=False):
     '''
-    ins
-    --
-    y =  what your trying to predict. must be a string. ie. 'SalesPrice'
-    df =  your predictions
-    df2 = the solutions set
-    p = option to print rmsle as string; 0 = dont print, 1 = print
-    outs
-    --
-    prints rmsle
-    rmsle as a float
+    Returns the Root Mean Squared Logarithmic Error of predictions
+
+    Parameters
+    ----------
+    y : str
+        Dependent Variable.
+    df : DataFrame
+        The predictions set.
+    df2 : DataFrame
+        The solutions set.
+    p : bool
+        option to print rmsle as string.
+
+    Returns
+    -------
+    Float :
+        rmsle
     '''
     prediction = np.asarray(df[y])
     actual = np.asarray(df2[y])
 
     rsmle = np.sqrt(np.mean(np.power(np.log(actual + 1) - np.log(prediction + 1), 2)))
 
-    if p == 1 :
-        print "rsmle: " + str(rsmle)
+    if p:
+        print "rsmle: {0}".format(rsmle)
     return rsmle
 
 
