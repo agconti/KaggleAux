@@ -459,22 +459,24 @@ def score_rmse(y, df, df2, p=False):
     return rsme
 
 
-def unwanted_pals(x, s=0.1):
+def unwanted_pals(model_results, significance=0.1):
     '''
-    Inputs
-    --
-    x should be a pandas series of the results.pvalues of your model
-    s = significance level, default at 90% confidence
+    Returns a list of features that are below a given level of significance.
 
-    Outs
-    --
-    returns a list of columns below significance level
+    Parameters
+    ----------
+    model_results : Series
+        a pandas series of the results.pvalues of your model
+    significance : float
+        significance level, default at 90% confidence.
+
+    Returns
+    -------
+    list :
+         a list of columns below the given significance level
     '''
-    dropl = list()
-    for i,z in enumerate(x):
-        if z>s:
-             dropl.append(x.index[i])
-    return dropl
+    return list((model_results.index[index] for index, pvalues in enumerate(model_results)
+                if pvalues > significance))
 
 
 def stock_price_at_date(x, ticker, lag=0):
