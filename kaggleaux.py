@@ -415,7 +415,7 @@ def score_rmsle(y, df, df2, p=False):
 
     Returns
     -------
-    Float :
+    float :
         rmsle
     '''
     prediction = np.asarray(df[y])
@@ -428,32 +428,38 @@ def score_rmsle(y, df, df2, p=False):
     return rsmle
 
 
-def score_rmse(y, df, df2, p=0 ):
+def score_rmse(y, df, df2, p=False):
     """
-    ins
-    --
-    y =  what your trying to predict. must be a string. ie. 'SalesPrice'
-    df =  your predictions
-    df2 = the solutions set
-    p = option to print rmsle as string; 0 = don't print, 1 = print
+    Returns the Root Mean Squared Error of predictions.
 
-    outs
-    --
-    prints rmse
-    rmse as a float
+    Parameters
+    ----------
+    y : str
+        Dependent Variable.
+    df : DataFrame
+        The predictions set.
+    df2 : DataFrame
+        The solutions set.
+    p : bool
+        option to print rmsle as string.
+
+    Returns
+    -------
+    Float :
+        rmse
     """
     prediction = np.asarray(df[y])
     actual = np.asarray(df2[y])
 
     rsme = np.sqrt(np.mean(np.power((actual - prediction), 2)))
 
-    if p == 1:
-        print "rsme: " + str(rsme)
+    if p:
+        print "rsme: {0}".format(rsme)
 
     return rsme
 
 
-def unwanted_pals(x, s = .1):
+def unwanted_pals(x, s=0.1):
     '''
     Inputs
     --
