@@ -459,7 +459,7 @@ def score_rmse(y, df, df2, p=False):
     return rsme
 
 
-def unwanted_pals(model_results, significance=0.1):
+def filter_features(model_results, significance=0.1):
     '''
     Returns a list of features that are below a given level of significance.
 
@@ -479,22 +479,27 @@ def unwanted_pals(model_results, significance=0.1):
                 if pvalues > significance))
 
 
-def stock_price_at_date(x, ticker, lag=0):
+def stock_price_at_date(lookup_date, ticker, lag=0):
     '''
-    ins
-    --
-    x should be the date your looking for
-    ticker should be the stock ticker
-    lag should be # of days to lag stock price
+    Returns the daily share price of a stock for a specified date range.
 
-    outs
-    --
-    stock price.
+    Parameters
+    ----------
+    lookup_date : Datetime.datetime.date
+         End date.
+    ticker: str
+        str corresponding the the stock's ticker symbol.
+    lag : int
+        length of trading days before start date
+
+    Returns
+    --------
+    DataFrame :
+        A stock's prices over a the given period.
     '''
-    x = (x - timedelta(days = lag))
-    r = DataReader(ticker,start=x, end=x, data_source='yahoo')
-    r = r.ix[0,5]
-    return r
+    start = (lookup_date - timedelta(days=lag))
+    return DataReader(ticker, start=start, end=lookup_date,
+                      data_source='yahoo').ix[0,5]
 
 
 def describe_frame(df):
