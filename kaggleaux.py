@@ -517,34 +517,46 @@ def describe_frame(df):
     return stats
 
 
-def bin_residuals(resid, var, bins):
+def bin_residuals(residuals, feature, bin_count):
     '''
-    Compute average residuals within bins of a variable.
+    Returns the average binned residuals of a feature.
 
     Returns a dataframe indexed by the bins, with the bin midpoint,
     the residual average within the bin, and the confidence interval
     bounds.
 
-    ins
-    --
-    resid, var, bins
+    Parameters
+    ----------
+    residuals : 
+        The residuals of the predictions of a feature from a particular model.
+    
+    feature : Series or ndarray
+        A feature and it's observations to average
+    
+    bin_count : int
+        The number of bins to use for averaging the residuals. 
+        ie. bin_count = 4 ; # makes quartiles.
 
-    out
-    --
-    bin DataFrame
+    Returns
+    -------
+    DataFrame :
+        A DataFrame containing the average binned result of a feature. 
 
     '''
-    resid_df = DataFrame({'var': var, 'resid': resid})
-    resid_df['bins'] = qcut(var, bins)
-    bin_group = resid_df.groupby('bins')
-    bin_df = bin_group['var', 'resid'].mean()
-    bin_df['count'] = bin_group['resid'].count()
-    bin_df['lower_ci'] = -2 * (bin_group['resid'].std() /
-                               np.sqrt(bin_group['resid'].count()))
-    bin_df['upper_ci'] =  2 * (bin_group['resid'].std() /
-                               np.sqrt(bin_df['count']))
-    bin_df = bin_df.sort('var')
+    residuals_df = DataFrame({'feature': feature, 'residuals': residuals})
+    
+    residuals_df['bin_count'] = qcut(feature, bin_count)
+    bin_group = residuals_df.groupby('bin_count')
+    
+    bin_df = bin_group['feature', 'residuals'].mean()
+    bin_df['count'] = bin_group['residuals'].count()
+    bin_df['lower_ci'] = (-2 * (bin_group['residuals'].std() /
+                                np.sqrt(bin_group['residuals'].count())))
+    bin_df['upper_ci'] = (2 * (bin_group['residuals'].std() /
+                                np.sqrt(bin_df['count'])))
+    bin_df = bin_df.sort('feature')
     return(bin_df)
+
 
 
 def plot_binned_residuals(bin_df):
