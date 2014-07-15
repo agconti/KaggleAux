@@ -55,7 +55,7 @@ def get_dataframes_intersections(df1, comparator1, df2, comparator2):
 
 def predict(test_data, results, model_name):
     """
-    Return predictions of based on model resutls.
+    Return predictions of based on model results.
 
     Parameters
     ----------
@@ -108,8 +108,8 @@ def predict(test_data, results, model_name):
 
 def cross_validate_df(df, percent):
     '''
-    Return a randomly shuffled supbsets of a DataFrame cross validation
-    or for down sampleing.
+    Return a randomly shuffled subsets of a DataFrame cross validation
+    or for down sampling.
 
     Parameters
     ----------
@@ -156,7 +156,7 @@ def dataframe_welch_ttest(df, described_frame, boolean_feature):
     Parameters
     ----------
     df : DataFrame
-       A DataFrame to perfrom welch_ttest on.
+       A DataFrame to perform welch_ttest on.
     described_frame : DataFrame
        A described DataFrame from the pandas desribe_frame() method.
     boolean_feature: Str
@@ -182,7 +182,7 @@ def dataframe_welch_ttest(df, described_frame, boolean_feature):
 
 def category_boolean_maker(series):
     '''
-    A funtction for to designate missing records from observed ones.
+    A function for to designate missing records from observed ones.
 
     When used with the pandas df.series.apply() method, it will create
     a boolean category variable. If values exist the bool will register
@@ -191,7 +191,7 @@ def category_boolean_maker(series):
     Parameters
     ----------
     series : Series
-        A pandas series to perform comparision on.
+        A pandas series to perform comparison on.
 
     Returns
     -------
@@ -204,12 +204,12 @@ def category_boolean_maker(series):
 
 def columns_to_str(column_list, operand=', ', return_list=False):
     '''
-    Return the list of features as strings for easy implementaiton patsy formulas.
+    Return the list of features as strings for easy implementation patsy formulas.
 
     Parameters
     ----------
     column_list : list
-        A list of features, ussually from generated from pandas's df.columns function.
+        A list of features, usually from generated from pandas's df.columns function.
 
     operand : str
         a sting to join list together by. Default is a comma: ', '. Could be a plus: ' + '
@@ -273,7 +273,7 @@ def ml_formula(y, df):
     y : str
         a string of the variable your trying to predict.
     df : DataFrame
-        the data frame your trying to make your predctions on.
+        the data frame your trying to make your predictions on.
 
     Returns
     -------
@@ -385,7 +385,7 @@ def quater_maker(d):
     Returns
     -------
     str :
-        The coresponding quarter in a string.
+        The corresponding quarter in a string.
         ie. 'Q1', 'Q2', 'Q3',  or 'Q4'
 
     """
@@ -459,7 +459,7 @@ def score_rmse(y, df, df2, p=False):
     return rsme
 
 
-def unwanted_pals(model_results, significance=0.1):
+def filter_features(model_results, significance=0.1):
     '''
     Returns a list of features that are below a given level of significance.
 
@@ -479,33 +479,42 @@ def unwanted_pals(model_results, significance=0.1):
                 if pvalues > significance))
 
 
-def stock_price_at_date(x, ticker, lag=0):
+def stock_price_at_date(lookup_date, ticker, lag=0):
     '''
-    ins
-    --
-    x should be the date your looking for
-    ticker should be the stock ticker
-    lag should be # of days to lag stock price
+    Returns the daily share price of a stock for a specified date range.
 
-    outs
-    --
-    stock price.
+    Parameters
+    ----------
+    lookup_date : Datetime.datetime.date
+         End date.
+    ticker: str
+        str corresponding the the stock's ticker symbol.
+    lag : int
+        length of trading days before start date
+
+    Returns
+    --------
+    DataFrame :
+        A stock's prices over a the given period.
     '''
-    x = (x - timedelta(days = lag))
-    r = DataReader(ticker,start=x, end=x, data_source='yahoo')
-    r = r.ix[0,5]
-    return r
+    start = (lookup_date - timedelta(days=lag))
+    return DataReader(ticker, start=start, end=lookup_date,
+                      data_source='yahoo').ix[0,5]
 
 
 def describe_frame(df):
     """
-    ins
-    ---
-    df = dataframe you want to describe
+    Returns the descriptive statistics of a given dataframe. 
+    
+    Parameters
+    ----------
+    df : DataFrane 
+        the dataframe you want to describe.
 
-    outs
-    ---
-    descriptive stats on your dataframe, in dataframe.
+    Returns
+    -------
+    DataFrame :
+        descriptive stats on your dataframe, in dataframe.
 
     """
     sum_stats = []
