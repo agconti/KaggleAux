@@ -55,7 +55,7 @@ def get_dataframes_intersections(df1, comparator1, df2, comparator2):
 
 def predict(test_data, results, model_name):
     """
-    Return predictions of based on model resutls.
+    Return predictions of based on model results.
 
     Parameters
     ----------
@@ -108,8 +108,8 @@ def predict(test_data, results, model_name):
 
 def cross_validate_df(df, percent):
     '''
-    Return a randomly shuffled supbsets of a DataFrame cross validation
-    or for down sampleing.
+    Return a randomly shuffled subsets of a DataFrame cross validation
+    or for down sampling.
 
     Parameters
     ----------
@@ -156,7 +156,7 @@ def dataframe_welch_ttest(df, described_frame, boolean_feature):
     Parameters
     ----------
     df : DataFrame
-       A DataFrame to perfrom welch_ttest on.
+       A DataFrame to perform welch_ttest on.
     described_frame : DataFrame
        A described DataFrame from the pandas desribe_frame() method.
     boolean_feature: Str
@@ -182,7 +182,7 @@ def dataframe_welch_ttest(df, described_frame, boolean_feature):
 
 def category_boolean_maker(series):
     '''
-    A funtction for to designate missing records from observed ones.
+    A function for to designate missing records from observed ones.
 
     When used with the pandas df.series.apply() method, it will create
     a boolean category variable. If values exist the bool will register
@@ -191,7 +191,7 @@ def category_boolean_maker(series):
     Parameters
     ----------
     series : Series
-        A pandas series to perform comparision on.
+        A pandas series to perform comparison on.
 
     Returns
     -------
@@ -204,12 +204,12 @@ def category_boolean_maker(series):
 
 def columns_to_str(column_list, operand=', ', return_list=False):
     '''
-    Return the list of features as strings for easy implementaiton patsy formulas.
+    Return the list of features as strings for easy implementation patsy formulas.
 
     Parameters
     ----------
     column_list : list
-        A list of features, ussually from generated from pandas's df.columns function.
+        A list of features, usually from generated from pandas's df.columns function.
 
     operand : str
         a sting to join list together by. Default is a comma: ', '. Could be a plus: ' + '
@@ -273,7 +273,7 @@ def ml_formula(y, df):
     y : str
         a string of the variable your trying to predict.
     df : DataFrame
-        the data frame your trying to make your predctions on.
+        the data frame your trying to make your predictions on.
 
     Returns
     -------
@@ -385,7 +385,7 @@ def quater_maker(d):
     Returns
     -------
     str :
-        The coresponding quarter in a string.
+        The corresponding quarter in a string.
         ie. 'Q1', 'Q2', 'Q3',  or 'Q4'
 
     """
@@ -504,13 +504,17 @@ def stock_price_at_date(lookup_date, ticker, lag=0):
 
 def describe_frame(df):
     """
-    ins
-    ---
-    df = dataframe you want to describe
+    Returns the descriptive statistics of a given dataframe. 
+    
+    Parameters
+    ----------
+    df : DataFrane 
+        the dataframe you want to describe.
 
-    outs
-    ---
-    descriptive stats on your dataframe, in dataframe.
+    Returns
+    -------
+    DataFrame :
+        descriptive stats on your dataframe, in dataframe.
 
     """
     sum_stats = []
@@ -522,33 +526,44 @@ def describe_frame(df):
     return stats
 
 
-def bin_residuals(resid, var, bins):
+def bin_residuals(residuals, feature, bin_count):
     '''
-    Compute average residuals within bins of a variable.
+    Returns the average binned residuals of a feature.
 
     Returns a dataframe indexed by the bins, with the bin midpoint,
     the residual average within the bin, and the confidence interval
     bounds.
 
-    ins
-    --
-    resid, var, bins
+    Parameters
+    ----------
+    residuals : 
+        The residuals of the predictions of a feature from a particular model.
+    
+    feature : Series or ndarray
+        A feature and it's observations to average
+    
+    bin_count : int
+        The number of bins to use for averaging the residuals. 
+        ie. bin_count = 4 ; # makes quartiles.
 
-    out
-    --
-    bin DataFrame
+    Returns
+    -------
+    DataFrame :
+        A DataFrame containing the average binned result of a feature. 
 
     '''
-    resid_df = DataFrame({'var': var, 'resid': resid})
-    resid_df['bins'] = qcut(var, bins)
-    bin_group = resid_df.groupby('bins')
-    bin_df = bin_group['var', 'resid'].mean()
-    bin_df['count'] = bin_group['resid'].count()
-    bin_df['lower_ci'] = -2 * (bin_group['resid'].std() /
-                               np.sqrt(bin_group['resid'].count()))
-    bin_df['upper_ci'] =  2 * (bin_group['resid'].std() /
-                               np.sqrt(bin_df['count']))
-    bin_df = bin_df.sort('var')
+    residuals_df = DataFrame({'feature': feature, 'residuals': residuals})
+    
+    residuals_df['bin_count'] = qcut(feature, bin_count)
+    bin_group = residuals_df.groupby('bin_count')
+    
+    bin_df = bin_group['feature', 'residuals'].mean()
+    bin_df['count'] = bin_group['residuals'].count()
+    bin_df['lower_ci'] = (-2 * (bin_group['residuals'].std() /
+                                np.sqrt(bin_group['residuals'].count())))
+    bin_df['upper_ci'] = (2 * (bin_group['residuals'].std() /
+                                np.sqrt(bin_df['count'])))
+    bin_df = bin_df.sort('feature')
     return(bin_df)
 
 
