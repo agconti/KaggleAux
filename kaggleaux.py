@@ -569,16 +569,20 @@ def bin_residuals(residuals, feature, bin_count):
 
 def plot_binned_residuals(bin_df):
     '''
-    Plotted binned residual averages and confidence intervals.
+    Plots the binned residual averages and confidence intervals of a binned dataframe.
 
-    ins
-    --
-    bin_df ie from bin_residuals(resid, var, bins)
-    outs
-    --
-    pretty plots
+    Parameters
+    ----------
+    bin_df : DataFrame 
+       the binned dataframe from bin_residuals(residuals, feature, bin_count).
+    
+    Returns
+    -------
+    matplotlib.figure : 
+        Plot of data frame residuals and confidence intervals. 
     '''
     plt.plot(bin_df['var'], bin_df['resid'], '.')
     plt.plot(bin_df['var'], bin_df['lower_ci'], '-r')
     plt.plot(bin_df['var'], bin_df['upper_ci'], '-r')
-    plt.axhline(0, color = 'gray', lw = .5)
+    plt.axhline(0, color='gray', lw=0.5)
+    return plt
