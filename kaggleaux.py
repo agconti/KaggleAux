@@ -567,6 +567,7 @@ def bin_residuals(residuals, feature, bin_count):
     return(bin_df)
 
 
+
 def plot_binned_residuals(bin_df):
     '''
     Plots the binned residual averages and confidence intervals of a binned dataframe.
