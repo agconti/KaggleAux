@@ -10,10 +10,8 @@ from pandas.io.data import DataReader
 from patsy import dmatrices
 
 
-def get_dataframe_intersection(df, comparator1, comparator2):
-    """
-    Return a dataframe with only the columns found in a comparative dataframe.
 
+<<<<<<< HEAD
     Parameters
     ----------
     comparator1: DataFrame
@@ -571,3 +569,5 @@ def plot_binned_residuals(bin_df):
     plt.plot(bin_df['var'], bin_df['lower_ci'], '-r')
     plt.plot(bin_df['var'], bin_df['upper_ci'], '-r')
     plt.axhline(0, color = 'gray', lw = .5)
+=======
+>>>>>>> c9286af282f55c27111fa1b427f8793370145e8e
