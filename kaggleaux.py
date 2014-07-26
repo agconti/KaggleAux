@@ -504,13 +504,17 @@ def stock_price_at_date(lookup_date, ticker, lag=0):
 
 def describe_frame(df):
     """
-    ins
-    ---
-    df = dataframe you want to describe
+    Returns the descriptive statistics for each column of a given DataFrame.
 
-    outs
-    ---
-    descriptive stats on your dataframe, in dataframe.
+    Parameters
+    ----------
+    df : DataFrame
+        The data frame want to describe.
+
+    Returns
+    -------
+    DataFrame :
+        descriptive stats of each feature of df.
 
     """
     sum_stats = []
@@ -518,8 +522,8 @@ def describe_frame(df):
         x = Series(df[i].describe())
         x.name = i
         sum_stats.append(x)
-    stats = DataFrame(sum_stats)
-    return stats
+    described_frame = DataFrame(sum_stats)
+    return described_frame
 
 
 def bin_residuals(resid, var, bins):
