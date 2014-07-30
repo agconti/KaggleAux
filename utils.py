@@ -1,3 +1,8 @@
+import sys
+from datetime import timedelta
+from pandas.io.data import DataReader
+
+
 class ProgressBar(object):
     '''
     Return A simple textual progress bar.
@@ -30,7 +35,7 @@ class ProgressBar(object):
     >>>[##]
 
     '''
-    def __init__(total_tasks):
+    def __init__(self, total_tasks):
         self.total_tasks = total_tasks
         self.tasks_completed = 0
         self.progress = "\r["
@@ -51,6 +56,7 @@ class ProgressBar(object):
     def update(self):
         self.increment()
         self.show()
+
 
 def list_intersection(left, right):
     '''
@@ -96,11 +102,11 @@ def stock_price_at_date(lookup_date, ticker, lag=0):
     '''
     start = (lookup_date - timedelta(days=lag))
     return DataReader(ticker, start=start, end=lookup_date,
-                      data_source='yahoo').ix[0,5]
+                      data_source='yahoo').ix[0, 5]
 
 
 def quater_maker(d):
-    """
+    '''
     Return the corresponding quarter for a given date.
 
     Parameters
@@ -114,12 +120,13 @@ def quater_maker(d):
         The corresponding quarter in a string.
         ie. 'Q1', 'Q2', 'Q3',  or 'Q4'
 
-    """
+    '''
+    d = d.month
     quaters = {
-        "Q1": [1, 2, 3]
-        "Q2": [4, 5, 6]
-        "Q3": [7, 8, 9]
+        "Q1": [1, 2, 3],
+        "Q2": [4, 5, 6],
+        "Q3": [7, 8, 9],
         "Q4": [10, 11, 12]
     }
-    return key if d in quaters[key] for key in quaters.keys()
+    return list((key for key in quaters.keys() if d in quaters[key]))[0]
     

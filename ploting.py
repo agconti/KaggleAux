@@ -1,3 +1,6 @@
+import numpy as np
+import matplotlib as plt
+from pandas import DataFrame, qcut
 
 
 def bin_residuals(residuals, feature, bin_count):
@@ -10,20 +13,20 @@ def bin_residuals(residuals, feature, bin_count):
 
     Parameters
     ----------
-    residuals : 
+    residuals :
         The residuals of the predictions of a feature from a particular model.
     
     feature : Series or ndarray
         A feature and it's observations to average
     
     bin_count : int
-        The number of bins to use for averaging the residuals. 
+        The number of bins to use for averaging the residuals.
         ie. bin_count = 4 ; # makes quartiles.
 
     Returns
     -------
     DataFrame :
-        A DataFrame containing the average binned result of a feature. 
+        A DataFrame containing the average binned result of a feature.
 
     '''
     residuals_df = DataFrame({'feature': feature, 'residuals': residuals})
@@ -36,7 +39,7 @@ def bin_residuals(residuals, feature, bin_count):
     bin_df['lower_ci'] = (-2 * (bin_group['residuals'].std() /
                                 np.sqrt(bin_group['residuals'].count())))
     bin_df['upper_ci'] = (2 * (bin_group['residuals'].std() /
-                                np.sqrt(bin_df['count'])))
+                               np.sqrt(bin_df['count'])))
     bin_df = bin_df.sort('feature')
     return(bin_df)
 
@@ -47,13 +50,13 @@ def plot_binned_residuals(bin_df):
 
     Parameters
     ----------
-    bin_df : DataFrame 
+    bin_df : DataFrame
        the binned dataframe from bin_residuals(residuals, feature, bin_count).
     
     Returns
     -------
-    matplotlib.figure : 
-        Plot of data frame residuals and confidence intervals. 
+    matplotlib.figure :
+        Plot of data frame residuals and confidence intervals.
     '''
     plt.plot(bin_df['var'], bin_df['resid'], '.')
     plt.plot(bin_df['var'], bin_df['lower_ci'], '-r')

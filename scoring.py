@@ -1,3 +1,5 @@
+import numpy as np
+
 
 def rmsle(y, df, df2, p=False):
     '''
@@ -30,7 +32,7 @@ def rmsle(y, df, df2, p=False):
 
 
 def rmse(y, df, df2, p=False):
-    """
+    '''
     Returns the Root Mean Squared Error of predictions.
 
     Parameters
@@ -48,7 +50,7 @@ def rmse(y, df, df2, p=False):
     -------
     Float :
         rmse
-    """
+    '''
     prediction = np.asarray(df[y])
     actual = np.asarray(df2[y])
 

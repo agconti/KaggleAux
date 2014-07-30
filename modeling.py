@@ -1,3 +1,9 @@
+import numpy as np
+from pandas import DataFrame
+from patsy import dmatrices
+import dataframe as ka_df
+
+
 def predict(test_data, results, model_name):
     """
     Return predictions of based on model results.
@@ -10,7 +16,8 @@ def predict(test_data, results, model_name):
         should be dict of your models results wrapper and the formula used
         to produce it.
             ie.
-            results['Model_Name'] = {[<statsmodels.regression.linear_model.RegressionResultsWrapper> , "Price ~ I(Supply, Demand)] }
+            results['Model_Name'] = [<statsmodels.regression.linear_model.RegressionResultsWrapper>,
+                                     "Price ~ I(Supply, Demand)]
     model_name: str
         should be the name of your model. You can iterate through the results dict.
 
@@ -21,8 +28,10 @@ def predict(test_data, results, model_name):
 
     Example
     -------
-    results = {'Logit': [<statsmodels.discrete.discrete_model.BinaryResultsWrapper at 0x117896650>,
-               'survived ~ C(pclass) + C(sex) + age + sibsp  + C(embarked)']}
+    results = {
+        'Logit': [<statsmodels.discrete.discrete_model.BinaryResultsWrapper at 0x117896650>,
+                  'survived ~ C(pclass) + C(sex) + age + sibsp  + C(embarked)']
+    }
     compared_resuts = predict(test_data, results, 'Logit')
 
     """
@@ -31,8 +40,8 @@ def predict(test_data, results, model_name):
 
     # Create regression friendly test DataFrame
     yt, xt = dmatrices(formula, data=test_data, return_type='dataframe')
-    xt, model_params = get_dataframes_intersections(xt, xt.columns,
-                                                    model_params, model_params.index)
+    xt, model_params = ka_df.get__intersections(xt, xt.columns,
+                                                model_params, model_params.index)
     # Convert to NumPy arrays for performance
     model_params = np.asarray(model_params)
     yt = np.asarray(yt)
@@ -111,8 +120,6 @@ def columns_to_str(column_list, operand=', ', return_list=False):
     print "[%s]" % operand.join(map(str, column_list))
 
 
-
-
 def ml_formula(y, df):
     '''
     Returns a string as a formula for patsy's dmatrices function.
@@ -142,7 +149,7 @@ def ml_formula(y, df):
     dependent_variables = ' + '.join((val for i, val in enumerate(df.columns) if val != y))
     formula = independent_variable + dependent_variables
     return formula
-    
+        
 
 def category_clean(category_value):
     """
@@ -185,4 +192,3 @@ def filter_features(model_results, significance=0.1):
     '''
     return list((model_results.index[index] for index, pvalues in enumerate(model_results)
                 if pvalues > significance))
-    

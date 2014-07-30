@@ -1,12 +1,16 @@
+## Auxiliary functions for Pandas DataFrames ##
+import numpy as np
+import scipy as sp
+from pandas import DataFrame, Series
 
 
 def describe(df):
     """
-    Returns the descriptive statistics of a given dataframe. 
-    
+    Returns the descriptive statistics of a given dataframe.
+
     Parameters
     ----------
-    df : DataFrane 
+    df : DataFrane
         the dataframe you want to describe.
 
     Returns
@@ -14,7 +18,7 @@ def describe(df):
     DataFrame :
         descriptive stats on your dataframe, in dataframe.
 
-    """~
+    """
     sum_stats = []
     for i in df.columns:
         x = Series(df[i].describe())
@@ -62,8 +66,8 @@ def get_dataframes_intersections(df1, comparator1, df2, comparator2):
         The resultingDataframe with columns not found in comparator dropped.
 
     """
-    comparator1 = get_dataframe_intersection(df1, comparator1, comparator2)
-    comparator2 = get_dataframe_intersection(df2, comparator2, comparator1)
+    comparator1 = get_intersection(df1, comparator1, comparator2)
+    comparator2 = get_intersection(df2, comparator2, comparator1)
     return comparator1, comparator2
 
 
