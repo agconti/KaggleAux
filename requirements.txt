@@ -10,3 +10,6 @@ python-dateutil==2.2
 pytz==2014.7
 six==1.8.0
 wsgiref==0.1.2
+scipy==0.14.0
+statsmodels==0.6.0
+patsy==0.3.0
