@@ -40,7 +40,7 @@ def predict(test_data, results, model_name):
 
     # Create regression friendly test DataFrame
     yt, xt = dmatrices(formula, data=test_data, return_type='dataframe')
-    xt, model_params = ka_df.get__intersections(xt, xt.columns,
+    xt, model_params = ka_df.get_dataframes_intersections(xt, xt.columns,
                                                 model_params, model_params.index)
     # Convert to NumPy arrays for performance
     model_params = np.asarray(model_params)
